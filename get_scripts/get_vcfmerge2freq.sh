@@ -27,6 +27,7 @@ echo "Merging the vcf files ..."
 # Get the running date of script
 todaydate="$(date +%Y%m%d)"
 
+echo "number of samples: "
 #Count number of sample
 ls ${vcfPath}/[0-9]*.vcf.gz | wc -l
 # Run vcf-merge and compress file with bgzip
