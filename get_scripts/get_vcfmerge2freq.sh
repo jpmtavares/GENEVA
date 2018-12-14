@@ -46,12 +46,16 @@ echo "Split the files by chromossomes ..."
 #Only the set of chromossomes were used, e.g. the MT was excluded
 for CHROM in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X Y;
 do
-    bcftools filter ${vcfPath}/todas_${todaydate}.vcf.gz -r ${CHROM} --threads 15 | bgzip -c > ${vcfPath}/chr${CHROM}_${todaydate}.vcf.gz;
+    bcftools filter ${vcfPath}/todas_${todaydate}.vcf.gz -r ${CHROM} | bgzip -c > ${vcfPath}/chr${CHROM}_${todaydate}.vcf.gz;
     # Create tabix index file
     tabix -p vcf ${vcfPath}/chr${CHROM}_${todaydate}.vcf.gz;
 done
 
+#exit script
+exit 1
+
 echo "Done this step"
+
 ############################################################
 #   3) get the frequences (in house info)
 ############################################################
@@ -59,13 +63,16 @@ echo "STEP 3:"
 echo "Construct the table with the number of samples, number of homozigotics and the allelic frequences ..."
 #Get the number os samples, the homozigotics and the allelic frequences
 #The number of processes runing at the same time is set to 24 (-P option)
-find ${vcfPath}/chr*_*vcf.gz | xargs -n1 -P24 -I {} python get_inHouseFreq.py -vcf {} -outname {}tmp.freq
+find ${vcfPath}/chr*_*vcf.gz | xargs -n1 -P24 -I {} get_inHouseFreq.py -vcf {} -outname {}tmp.freq
+
+#exit script
+exit 1
 
 #Create a unique file with the frequences
 cat ${vcfPath}/*tmp.freq >> ${vcfPath}/in_HouseInput_${todaydate}.txt
 
 #Remove all temporary files
-rm chr*gz*
-rm *tmp.freq
+rm ${vcfPath}/chr*_*vcf.gz*
+rm ${vcfPath}/*tmp.freq
 
 echo "Finish!" 
