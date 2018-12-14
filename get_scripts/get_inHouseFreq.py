@@ -7,7 +7,6 @@ import vcf
 parser = argparse.ArgumentParser(description='Get the number of samples with variantes (homozy and hetero) and the allele frequence to construct the final info')
 parser.add_argument('-vcf', '--vcf_file', help='Ouptut vcf from the vcf-merge', required=True)
 parser.add_argument('-outname', '--out_file', help='Name of the output file', required=True)
-
 args = parser.parse_args()
 
 def getAllInfo(input_vcf, out_file):
