@@ -2,7 +2,7 @@
 
 #######################################################################################
 #                                                                                     #
-#                 Merge vcf files and split them by chromosome                        #
+#           Merge samples VCF files and get inHouse frequency table                   #
 #                                                                                     #
 #######################################################################################
 
@@ -51,9 +51,6 @@ do
     tabix -p vcf ${vcfPath}/chr${CHROM}_${todaydate}.vcf.gz;
 done
 
-#exit script
-exit 1
-
 echo "Done this step"
 
 ############################################################
@@ -75,4 +72,4 @@ cat ${vcfPath}/*tmp.freq >> ${vcfPath}/in_HouseInput_${todaydate}.txt
 rm ${vcfPath}/chr*_*vcf.gz*
 rm ${vcfPath}/*tmp.freq
 
-echo "Finish!" 
+echo "Finish!"
