@@ -6,8 +6,8 @@
 #######################################################################################
 #' Get ClinVar GRCh37 vcf file from ftp://ftp.ncbi.nlm.nih.gov/pub/clinvar/
 #' 
-#' @param d_ClinVar download directory A number.
-#' @param y A number.
+#' @param d_ClinVar download directory; default: /usr/local/share/bcbio/genomes/Hsapiens/GRCh37/variation/
+#' @param d_vcfanno vcfanno config directory; default: /usr/local/share/bcbio/genomes/Hsapiens/GRCh37/config/vcfanno/
 #' @return ClinVar GRCH37 vcf, remove older version, and replace date of updated file in config/vcfanno/myanno.conf 
 #' @examples
 #' Rscript ./get_clinvar.R
