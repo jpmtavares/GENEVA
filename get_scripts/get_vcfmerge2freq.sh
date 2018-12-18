@@ -103,8 +103,10 @@ find ${vcfPath}/chr*_*vcf.gz | xargs -n1 -P${processes} -I {} get_inHouseFreq.py
 #Create a unique file with the frequences
 cat ${vcfPath}/*tmp.freq >> ${vcfPath}/in_HouseInput_${todaydate}.txt
 
-#Sort file by chromosome position
-sort -k1,1 -k2,2n ${vcfPath}/in_HouseInput_${todaydate}.txt > ${freqPath}/${outputname}${todaydate}.txt
+#Sort file by chromosome position and compress it
+sort -k1,1 -k2,2n ${vcfPath}/in_HouseInput_${todaydate}.txt | bgzip -c > ${freqPath}/${outputname}${todaydate}.txt
+# Create tabix index file [start column [-b] and end column [-e] is the same]
+tabix -b 2 -e 2 ${freqPath}/${outputname}${todaydate}.txt
 
 #Remove all temporary files
 rm ${vcfPath}/chr*_*vcf.gz*
