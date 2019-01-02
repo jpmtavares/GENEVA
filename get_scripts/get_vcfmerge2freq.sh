@@ -98,7 +98,7 @@ echo "STEP 3:"
 echo "Construct the table with the number of samples, number of homozigotics and the allelic frequences ..."
 #Get the number os samples, the homozigotics and the allelic frequences
 #The number of processes runing at the same time is set to 24 (-P option)
-find ${vcfPath}/chr*_*vcf.gz | xargs -n1 -P${processes} -I {} get_inHouseFreq.py -vcf {} -outname {}tmp.freq
+find ${vcfPath}/chr*_*vcf.gz | xargs -n1 -P${processes} -I {} ./get_inHouseFreq.py -vcf {} -outname {}tmp.freq
 
 #Create a unique file with the frequences
 cat ${vcfPath}/*tmp.freq >> ${vcfPath}/in_HouseInput_${todaydate}.txt
