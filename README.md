@@ -33,3 +33,8 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
 
   
   usage: `get_vcfmerge2freq.sh [-h] [-v <path to VCF files>] [-d <path to output>] [-o <output name>] [-p <number of process to run>]`
+  
+  ## pipelines
+* [Allele Frequency](https://github.com/jpmtavares/GENEVA/blob/master/pipelines/GENEVA_AlleleFrequency.sh)
+
+  Download and run `get_vcfmerge2freq.sh` and `get_inHouseFreq.py` in present work directory, which will be used as default directory for getting VCF samples files and output Allele Frequency file. 
