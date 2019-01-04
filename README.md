@@ -6,6 +6,13 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
 * [RefSeq - clinical transcripts](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeq_clinical_transcripts.txt)
 
   List of RefSeq transcripts used in Human Gene Mutation Database (HGMD). This file contains information about: `HGNC_symbol`,  `ENSGene`, `ENSTranscript`, `refSeq_mRNA` and `refSeq_protein`.
+  
+## create_scripts
+* [create_RefSeq.R](https://github.com/jpmtavares/GENEVA/blob/master/create_scripts/create_RefSeq.R)
+
+  Create NCBI RefSeq BED file with clinical transcripts information. This script accepts RefSeq BED files (hg19) from UCSC Table Browser `--exons=="path/to/exons.bed"` and `--introns=="path/to/introns.bed"`, as well as a BED file with [clinical transcripts](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeq_clinical_transcripts.txt) `--clinical==path/to/clinical_transcripts.txt`. The output file contains information about: `Chr`, `Start 1-based`, `End`, `Rank.Exons.Introns`, `Strand`, `HGNC_symbol`,  `ENSGene`, `ENSTranscript`, `refSeq_mRNA` and `refSeq_protein`.
+  
+  usage: `create_RefSeq.R --exons=="path/to/exons.bed" --introns=="path/to/introns.bed" --clinical=="path/to/clinical_transcripts.txt"`
  
 ## get_scripts
 * [get_clinvar.R](https://github.com/jpmtavares/GENEVA/blob/master/get_scripts/get_clinvar.R)
@@ -37,4 +44,6 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
   ## pipelines
 * [Allele Frequency](https://github.com/jpmtavares/GENEVA/blob/master/pipelines/GENEVA_AlleleFrequency.sh)
 
-  Download and run `get_vcfmerge2freq.sh` and `get_inHouseFreq.py` in present work directory, which will be used as default directory for getting VCF samples files and output Allele Frequency file. 
+  Download and run `get_vcfmerge2freq.sh` and `get_inHouseFreq.py` in present work directory, which will be used as default directory for getting VCF samples files and output Allele Frequency file.
+  
+  usage: `GENEVA_AlleleFrequency.sh`
