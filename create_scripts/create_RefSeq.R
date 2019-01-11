@@ -97,8 +97,11 @@ bed$End <-format(bed$End, scientific = FALSE)
 write.table(bed, paste(filename, ".bed", sep=""), col.names=F, row.names=F, quote=F, sep="\t")
 
 ################################################################
-# 5) sort BED file and indexed it
+# 5) sort BED file, create BED for coverage analysis and indexed it
 ################################################################
 system(paste("sort -k1,1 -k2,2n -k3,3n", paste(filename, ".bed", sep=""), ">", paste(filename, "_sort.bed", sep=""), sep=" "))
+# BED for coverage analysis
+system(paste("awk 'NF{NF-=1};1'", paste(filename, "_sort.bed", sep=""), "| uniq | awk '{ print $1"\t"$2"\t"$3"\t"$6","$4","$5","$7","$8","$9}' | sed -r "s/\s+/\t/g" >", paste(filename, "_coverage.bed", sep=""), sep " "))
+# index "_sort.bed"
 system(paste("bgzip", paste(filename, "_sort.bed", sep=""), sep=" "))
 system(paste("tabix -b 2 -e 3", paste(filename, "_sort.bed.gz", sep=""), sep=" "))
