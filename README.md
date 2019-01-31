@@ -41,6 +41,12 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
   
   usage: `get_vcfmerge2freq.sh [-h] [-v <path to VCF files>] [-d <path to output>] [-o <output name>] [-p <number of process to run>]`
   
+* [get_UMDpredictor.R](https://github.com/jpmtavares/GENEVA/blob/master/get_scripts/get_UMDpredictor.R)
+
+  Get [UMD-predictor](http://umd-predictor.eu/) scores for a list of Ensembl transcripts IDs. The output is written in a sorted file containg: `Chr`, `Position`, `Ref`, `Alt`, `HGVS_c`, `HGVS_p`, `HGNC_symbol`, `ENSTranscript`, `UMD_pred`, `UMD_score`
+
+  usage: `get_UMDpredictor.R [--help] --ENSTranscripts=="path/to/ENSTranscripts.txt"`
+  
   ## pipelines
 * [Allele Frequency](https://github.com/jpmtavares/GENEVA/blob/master/pipelines/GENEVA_AlleleFrequency.sh)
 
