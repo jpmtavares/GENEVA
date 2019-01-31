@@ -53,3 +53,10 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
   Download and run `get_vcfmerge2freq.sh` and `get_inHouseFreq.py` in present work directory, which will be used as default directory for getting VCF samples files and output Allele Frequency file.
   
   **usage**: `GENEVA_AlleleFrequency.sh`
+  
+  ## utils
+* [vcf2table.R](https://github.com/jpmtavares/GENEVA/blob/master/utils/vcf2table.R)
+
+  Converts a VCF file into a TSV with the corresponding header. The output file is written in the same directory as the input.
+  
+  **usage**: `vcf2table.R --vcf=="path/to/input_file.vcf"`
