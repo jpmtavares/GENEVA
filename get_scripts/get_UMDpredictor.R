@@ -153,5 +153,5 @@ sink() # close log file
 print("Sort and Index file.")
 system(paste("sort -k1,1 -k2,2n ", paste(filename,".txt",sep=""), ">", paste(filename, "_sort.txt", sep=""), sep=" "))
 # index "_sort.txt"
-system(paste("bgzip", paste(filename, "_sort.txt", sep=""), sep=" "))
-system(paste("tabix -b 2 -e 2", paste(filename, "_sort.txt.gz", sep=""), sep=" "))
+system(paste("bgzip", paste(filename, "_sort_header.txt", sep=""), sep=" "))
+system(paste("tabix -p vcf", paste(filename, "_sort_header.txt.gz", sep=""), sep=" "))
