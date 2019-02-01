@@ -140,8 +140,11 @@ mclapply(names(umd), function(x){
   write.table(umd[[x]], paste("./UMD_tmp/", x,".txt",sep=""), col.names=F, row.names=F, quote=F, sep="\t")
 }, mc.preschedule = TRUE, mc.cores = 8)
 
+# add header to final file
+write.table("##UMD-predictor\n#Chr\tPos\tRef\tAlt\tHGVS_c\tHGVS_p\tHGNC_symbol\tENSTranscript\tUMD_pred\tUMD_score", "./UMD_tmp/header.txt", col.names=F, row.names=F, quote=F, sep="\t")
+
 print("Concatenate transcript files...")
-system(paste("cat ./UMD_tmp/*.txt > ", filename, ".txt",sep=""))
+system(paste("cat ./UMD_tmp/header.txt ./UMD_tmp/ENS*.txt > ", filename, ".txt",sep=""))
 sink() # close log file
 
 #########################################################
