@@ -59,4 +59,4 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
 
   Converts a VCF file into a TSV with the corresponding header. The output file is written in the same directory as the input.
   
-  **usage**: `vcf2table.R --vcf=="path/to/input_file.vcf"`
+  **usage**: `vcf2table.R --vcf=="path/to/input_file.vcf" [optional: --header=="CHROM, POS, ID, REF, ALT"]`
