@@ -47,6 +47,10 @@ if("--help" %in% args | is.null(args$ENSTranscripts)) {
 #__________________________________________________________
 # FUNCTIONS
 #__________________________________________________________
+revcomp<-function(DNAnucleotides){
+  chartr("ATGC", "TACG", DNAnucleotides)
+}
+
 UMDpredictor<-function(ENSTranscripts){
   # create url for each transcript
   url<-paste("http://umd-predictor.eu/transcript_query2.php?name=",
@@ -73,11 +77,11 @@ UMDpredictor<-function(ENSTranscripts){
   #________________________________
   print("Getting Ensembl transcript information from BioMart...")
   ensembl<-useMart("ensembl", dataset="hsapiens_gene_ensembl")
-  Ensembl_info<-getBM(attributes = c('chromosome_name', 'hgnc_symbol', 'ensembl_transcript_id'), 
+  Ensembl_info<-getBM(attributes = c('chromosome_name', 'hgnc_symbol','strand','ensembl_transcript_id'), 
                       filters = 'ensembl_transcript_id', 
                       values = ENSTranscripts, 
                       mart = ensembl)
-  names(Ensembl_info)<-c("Chr", "HGNC_symbol", "ENSTranscript")
+  names(Ensembl_info)<-c("Chr", "HGNC_symbol", "Strand", "ENSTranscript")
   print("BioMart retrieved.")
   
   # join Ensembl and UMD-predictor
@@ -90,6 +94,18 @@ UMDpredictor<-function(ENSTranscripts){
   final<-mclapply(result, function(x){
     alleles<-do.call(rbind.data.frame, str_extract_all(as.character(x$HGVS_c), "[ACGT]"))
     names(alleles)<-c("Ref","Alt")
+    #________________________________
+    # Reverse complement
+    #________________________________
+    alleles$Ref<-ifelse(as.numeric(as.character(x$Strand))==-1,
+                        revcomp(alleles$Ref),
+                        as.character(alleles$Ref))
+    alleles$Alt<-ifelse(as.numeric(as.character(x$Strand))==-1,
+                        revcomp(alleles$Alt),
+                        as.character(alleles$Alt))
+    #________________________________
+    # Get final table
+    #________________________________
     return(data.frame(Chr=x$Chr, Position=x$Position, Ref=alleles$Ref, Alt=alleles$Alt,
                       HGVS_c=x$HGVS_c, HGVS_p=x$HGVSp, HGNC_symbol=x$HGNC_symbol,
                       ENSTranscript=x$ENSTranscript, UMD_pred=x$`UMD-predictor`,
@@ -141,7 +157,7 @@ mclapply(names(umd), function(x){
 }, mc.preschedule = TRUE, mc.cores = 8)
 
 # add header to final file
-write.table("##UMD-predictor\n#Chr\tPos\tRef\tAlt\tHGVS_c\tHGVS_p\tHGNC_symbol\tENSTranscript\tUMD_pred\tUMD_score", "./UMD_tmp/header.txt", col.names=F, row.names=F, quote=F, sep="\t")
+write.table("#Chr\tPos\tRef\tAlt\tHGVS_c\tHGVS_p\tHGNC_symbol\tENSTranscript\tUMD_pred\tUMD_score", "./UMD_tmp/header.txt", col.names=F, row.names=F, quote=F, sep="\t")
 
 print("Concatenate transcript files...")
 system(paste("cat ./UMD_tmp/header.txt ./UMD_tmp/ENS*.txt > ", filename, ".txt",sep=""))
@@ -151,7 +167,7 @@ sink() # close log file
 # 4) sort otuput file and indexed it
 #########################################################
 print("Sort and Index file.")
-system(paste("sort -k1,1 -k2,2n ", paste(filename,".txt",sep=""), ">", paste(filename, "_sort.txt", sep=""), sep=" "))
+system(paste("sort -k1,1 -k2,2n ", paste(filename,".txt",sep=""), ">", paste(filename, "_sort_header.txt", sep=""), sep=" "))
 # index "_sort.txt"
 system(paste("bgzip", paste(filename, "_sort_header.txt", sep=""), sep=" "))
 system(paste("tabix -p vcf", paste(filename, "_sort_header.txt.gz", sep=""), sep=" "))
