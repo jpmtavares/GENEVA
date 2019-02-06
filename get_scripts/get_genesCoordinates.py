@@ -1,7 +1,7 @@
 import argparse
 
 parser = argparse.ArgumentParser(
-    description='Cross the information from HGMD and from HGVS, completing the HGMD with HGVS nomenclature')
+    description='Get the genes position, first and last position')
 parser.add_argument('-genes_file', '--refseq', help='RefSeq file, sorted in bed format', required=True)
 parser.add_argument('-outname', '--out_file', help='Name of the output file', required=True)
 args = parser.parse_args()
