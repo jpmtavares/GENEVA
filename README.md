@@ -47,6 +47,12 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
 
   **usage**: `get_UMDpredictor.R [--help] --ENSTranscripts=="path/to/ENSTranscripts.txt"`
   
+* [get_genesCoordinates.py](hhtp://github.com/jpmtavares/GENEVA/blob/master/get_scripts/get_genesCoordinates.py)
+
+    Get the first and last position of a gene. The output is written in a sorted filed by coordinates: `Chr`, `First Position`, `Last Position`, `Gene`. 
+    
+    **usage**: `get_genesCoordinates.py [-h] -genes_file REFSEQ -outname OUT_FILE`
+  
   ## pipelines
 * [Allele Frequency](https://github.com/jpmtavares/GENEVA/blob/master/pipelines/GENEVA_AlleleFrequency.sh)
 
