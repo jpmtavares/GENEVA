@@ -52,6 +52,13 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
     Get the first and last position of a gene. The output is written in a sorted filed by coordinates: `Chr`, `First Position`, `Last Position`, `Gene`. 
     
     **usage**: `get_genesCoordinates.py [-h] -genes_file REFSEQ -outname OUT_FILE`
+
+* [get_hgvsnomenclature.py](https://github.com/jpmtavares/GENEVA/blob/master/get_scripts/get_hgvsnomenclature.py)  
+
+    Get the variants that have HGVS(http://www.hgvs.org/) information (cDNA and protein) from VEP (v.95) output (vcf) with the human genome (hg19). The output is a vcf with: `Chr`, `First Position`, `Last Position`, `RefSeq_mRNA`, `HGVS c.`, `RefSeq_prot`, `HGVS p.`. 
+    
+    **usage**: `get_hgvsnomenclature.py [-h] -vcf VCFFile -outname OUT_FILE`
+
   
   ## pipelines
 * [Allele Frequency](https://github.com/jpmtavares/GENEVA/blob/master/pipelines/GENEVA_AlleleFrequency.sh)
