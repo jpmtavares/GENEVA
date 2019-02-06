@@ -20,12 +20,31 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
   Get ClinVar GRCh37 vcf file from ClinVar. This script runs with default values for downloading ClinVar directory, and [vcfanno](https://github.com/brentp/vcfanno) configuration file directory. These parameters can be chosen:
   
   **usage**: `get_clinvar.R <ClinVar download directory> <vcfanno config file directory>`
+  
+ * [get_genesCoordinates.py](https://github.com/jpmtavares/GENEVA/blob/master/get_scripts/get_genesCoordinates.py) 
+
+    Get the first and last position of a gene. The output is written in a sorted filed by coordinates: `Chr`, `First Position`, `Last Position`, `Gene`. 
+    
+    **usage**: `get_genesCoordinates.py [-h] -genes_file REFSEQ -outname OUT_FILE`
+
+* [get_hgvsnomenclature.py](https://github.com/jpmtavares/GENEVA/blob/master/get_scripts/get_hgvsnomenclature.py)  
+
+    Get the variants that have [HGVS](http://www.hgvs.org/) information (cDNA and protein) from VEP (v.95) output (vcf) with the human genome (hg19). The output is a vcf with: `Chr`, `First Position`, `Last Position`, `RefSeq_mRNA`, `HGVS c.`, `RefSeq_prot`, `HGVS p.`. 
+    
+    **usage**: `get_hgvsnomenclature.py [-h] -vcf VCFFile -outname OUT_FILE`
 
 * [get_inHousefreq.py](https://github.com/jpmtavares/GENEVA/blob/master/get_scripts/get_inHouseFreq.py)
 
   Get the number of samples in a VCF file with a given variant (either in homozigosity or heterozigosity) and the corresponding allele frequency. The output is writen in a sorted file containg: `Chr`, `Position`, `Ref`, `Alt`, `Number of samples with variant`, `Number of homozygous samples`, `Allele Frequency`.
   
   **usage**: `get_inHouseFreq.py -vcf <multisample VCF file> -outname <output name>`
+  
+* [get_mutationtaster.R](https://github.com/jpmtavares/GENEVA/blob/master/get_scripts/get_mutationtaster.R)
+
+  Get [MutationTaster](http://www.mutationtaster.org/) prediction scores. The output doesn't get transcript information into consideration, presenting unique values for a certain variant. This script accepts an input file with `Chr`, `Position`, `Ref`, `Alt`.
+  
+  **usage**: `get_mutationtaster.R --variants=="path/to/variants_file.txt"`
+              can be parallelized with: `find <path/to/variants_files*> | xargs -n1 -P 20 -I {} sh -c 'echo {} && ./get_mutationtaster.R --variants=={}'`
 
 * [get_vcfmerge2freq.sh](https://github.com/jpmtavares/GENEVA/blob/master/get_scripts/get_vcfmerge2freq.sh)
 
@@ -46,19 +65,6 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
   Get [UMD-predictor](http://umd-predictor.eu/) scores for a list of Ensembl transcripts IDs. The output is written in a sorted file containg: `Chr`, `Position`, `Ref`, `Alt`, `HGVS_c`, `HGVS_p`, `HGNC_symbol`, `ENSTranscript`, `UMD_pred`, `UMD_score`
 
   **usage**: `get_UMDpredictor.R [--help] --ENSTranscripts=="path/to/ENSTranscripts.txt"`
-  
-* [get_genesCoordinates.py](https://github.com/jpmtavares/GENEVA/blob/master/get_scripts/get_genesCoordinates.py) 
-
-    Get the first and last position of a gene. The output is written in a sorted filed by coordinates: `Chr`, `First Position`, `Last Position`, `Gene`. 
-    
-    **usage**: `get_genesCoordinates.py [-h] -genes_file REFSEQ -outname OUT_FILE`
-
-* [get_hgvsnomenclature.py](https://github.com/jpmtavares/GENEVA/blob/master/get_scripts/get_hgvsnomenclature.py)  
-
-    Get the variants that have [HGVS](http://www.hgvs.org/) information (cDNA and protein) from VEP (v.95) output (vcf) with the human genome (hg19). The output is a vcf with: `Chr`, `First Position`, `Last Position`, `RefSeq_mRNA`, `HGVS c.`, `RefSeq_prot`, `HGVS p.`. 
-    
-    **usage**: `get_hgvsnomenclature.py [-h] -vcf VCFFile -outname OUT_FILE`
-
   
   ## pipelines
 * [Allele Frequency](https://github.com/jpmtavares/GENEVA/blob/master/pipelines/GENEVA_AlleleFrequency.sh)
