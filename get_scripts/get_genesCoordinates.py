@@ -15,11 +15,12 @@ def createFileWithGenes(infile, outname):
         for line in bed:
             aux = line.rstrip().split("\t")
             id = aux[5]
-            if id in dic_genes.keys():
-                info = dic_genes.get(id, " ")
-                dic_genes[id] = [info[0], info[1], aux[2]]
-            else:
-                dic_genes[aux[5]] = [aux[0], aux[1], aux[2]]
+            if "_" not in aux[0]:
+                if id in dic_genes.keys():
+                    info = dic_genes.get(id, " ")
+                    dic_genes[id] = [info[0], info[1], aux[2]]
+                else:
+                    dic_genes[aux[5]] = [aux[0], aux[1], aux[2]]
 
 
     outfile.write("#Chro"+"\t"+"Start"+"\t"+"End"+"\t"+"Gene"+"\n")
