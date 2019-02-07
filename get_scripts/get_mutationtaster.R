@@ -12,6 +12,7 @@ library(XML, quietly=TRUE)
 library(rlist, quietly=TRUE)
 library(reticulate, quietly=TRUE)
 use_python("/usr/bin/python3.5")
+library(lubridate, quietly=TRUE, warn.conflicts = FALSE)
 
 #______________________________________________
 # HELP function
@@ -50,7 +51,15 @@ variants<-read.delim(args[["variants"]], header=F)
 filename<-basename(args[["variants"]])
 
 names(variants)<-c("Chr", "Position", "Ref", "Alt")
-
+#remove N nucleotides
+#ref
+if(any(grepl("N", variants$Ref))){
+  variants<-variants[-grep("N", variants$Ref),]
+}
+#alt
+if(any(grepl("N", variants$Alt))){
+  variants<-variants[-grep("N", variants$Alt),]
+}
 #_________________________________________________________
 # FUNCTIONS
 #_________________________________________________________
@@ -68,7 +77,7 @@ MT<-function(variants){
   
   mt<-do.call(rbind.data.frame,parallel)
   print(paste("MutationTaster scores for ", filename, " retrieved."))
-
+  
   write.table(mt[ ,c(1:4, 14, 5:7, 10)], paste("MT_", filename, sep="") , col.names=T, row.names=F, quote=F, sep="\t")
   system(paste("mv ", filename, " ./MT_success_files/", sep=""))
 }
@@ -82,12 +91,12 @@ mutationTaster<-function(Chr,Position,Ref,Alt){
                    position=as.character(Position),
                    ref=as.character(Ref),
                    alt=as.character(Alt))
-
+  
   response<-requests$get("http://www.mutationtaster.org/cgi-bin/MutationTaster/MT_ChrPos.cgi?", params = parameters)
-
+  
   #if there is some error with the query
-  if(grepl("InDels must start with the last reference base|wrong input format|data problem|no suitable transcript|annotation problem|Software error",
-            response$content)){
+  if(grepl("InDels must start with the last reference base|wrong input format|data problem|no suitable transcript|annotation problem|Software error|alternative allele actually is the reference allele",
+           response$content)){
     problem<-str_extract(response$content,"InDels must start with the last reference base|wrong input format|data problem|no suitable transcript")
     results<-data.frame(genesymbol=NA, prediction=NA, probability=NA,
                         model=NA, predictionproblem=NA, splicing=NA,
@@ -95,9 +104,9 @@ mutationTaster<-function(Chr,Position,Ref,Alt){
                         `variant type`=NA, `dbSNP ID`=NA, `protein length`=NA,
                         file=NA)
   } else {
-      tables<-readHTMLTable(response$content)
-      tables <- list.clean(tables, fun = is.null, recursive = FALSE)
-      results<-as.data.frame(tables[[1]])
+    tables<-readHTMLTable(response$content)
+    tables <- list.clean(tables, fun = is.null, recursive = FALSE)
+    results<-as.data.frame(tables[[1]])
   }
   
   return(unique(results))
@@ -112,5 +121,6 @@ dir.create("./MT_success_files/", showWarnings = FALSE, recursive = FALSE)
 print(paste("Reading ", filename, "...", sep=""))
 # Run script
 MT(variants)
-print(paste(filename, "finished with SUCCESS!!", sep=" "))
+print(paste(now("GMT"), ": ", filename, " finished with SUCCESS!!", sep=""))
 sink()
+
