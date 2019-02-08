@@ -6,12 +6,6 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
 * [RefSeq - clinical transcripts](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeq_clinical_transcripts.txt)
 
   List of RefSeq transcripts used in Human Gene Mutation Database (HGMD). This file contains information about: `HGNC_symbol`,  `ENSGene`, `ENSTranscript`, `refSeq_mRNA` and `refSeq_protein`.
-
-* [checkDiffNameGene.py](https://github.com/jpmtavares/GENEVA/blob/master/annotations/checkDiffNameGene.py) 
-
-  This script cross the name of the genes in both versions of human genome (GRCh37 and GRCh38) and write a file with the genes that has changed.
-  
-  **usage**:`checkGenesNamesgrch37vsgrch38.py [-h] -refSeq REF_FILE -twoVersions BOTH_FILE -outname OUT_FILE`
   
 ## create_scripts
 * [create_RefSeq.R](https://github.com/jpmtavares/GENEVA/blob/master/create_scripts/create_RefSeq.R)
@@ -80,6 +74,12 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
   **usage**: `GENEVA_AlleleFrequency.sh`
   
   ## utils
+* [checkDiffNameGene.py](https://github.com/jpmtavares/GENEVA/blob/master/annotations/checkDiffNameGene.py) 
+
+  This script crosses the name of the genes in both versions of human genome (GRCh37 and GRCh38) and write a file with the genes that has changed.
+  
+  **usage**:`checkGenesNamesgrch37vsgrch38.py [-h] -refSeq REF_FILE -twoVersions BOTH_FILE -outname OUT_FILE`
+
 * [vcf2table.R](https://github.com/jpmtavares/GENEVA/blob/master/utils/vcf2table.R)
 
   Converts a VCF file into a TSV with the corresponding header. The output file is written in the same directory as the input.
