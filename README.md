@@ -9,7 +9,7 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
 
 * [checkDiffNameGene.py](https://github.com/jpmtavares/GENEVA/blob/master/annotations/checkDiffNameGene.py) 
 
-  This script cross the name of the genes in both versions of human genome (GRCh37 and GRCh38) and write a file with the genes that had changed.
+  This script cross the name of the genes in both versions of human genome (GRCh37 and GRCh38) and write a file with the genes that has changed.
   
   **usage**:`checkGenesNamesgrch37vsgrch38.py [-h] -refSeq REF_FILE -twoVersions BOTH_FILE -outname OUT_FILE`
   
