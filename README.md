@@ -74,7 +74,7 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
   **usage**: `GENEVA_AlleleFrequency.sh`
   
   ## utils
-* [checkDiffNameGene.py](https://github.com/jpmtavares/GENEVA/blob/master/annotations/checkDiffNameGene.py) 
+* [checkDiffNameGene.py](https://github.com/jpmtavares/GENEVA/blob/master/utils/checkDiffNameGene.py) 
 
   This script crosses the name of the genes in both versions of human genome (GRCh37 and GRCh38) and write a file with the genes that has changed.
   
