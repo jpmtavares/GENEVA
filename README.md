@@ -3,6 +3,10 @@
 A repository for annotating, interpreting, reporting and visualizing germline SNPs and small indels in exome data.
 
 ## annotations
+* [RefSeq](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeqGRCh37_Ensembl_LRG_clinical.txt)
+
+  List of RefSeq GRCh37 transcripts integrated with Ensembl, LRG and [clinical transcripts](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeq_clinical_transcripts.txt). This file was created with [create_RefSeqGRCh37_Ensembl_LRG_clinical.R](https://github.com/jpmtavares/GENEVA/blob/master/create_scripts/create_RefSeqGRCh37_Ensembl_LRG_clinical.R) and contains information about: `HGNC_symbol`,  `HGNC_alternative_symbol`, `refSeq_mRNA`, `refSeq_protein`, `refSeq_mRNA_noVersion`, `refSeq_protein_noVersion`, `ENSGene`, `ENSTranscript`, `LRG_id`, `clinical_transcript`.
+  
 * [RefSeq - clinical transcripts](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeq_clinical_transcripts.txt)
 
   List of RefSeq transcripts used in Human Gene Mutation Database (HGMD). This file was manually curated and contains information about: `HGNC_symbol`,  `ENSGene`, `ENSTranscript`, `refSeq_mRNA` and `refSeq_protein`.
