@@ -33,7 +33,7 @@ args <- argsL
 rm(argsL)
 
 # Default setting when no all arguments passed or help needed
-if("--help" %in% args | is.null(args$exons) | is.null(args$introns) | is.null(args$clinical)) {
+if("--help" %in% args | is.null(args$exons) | is.null(args$introns) | is.null(args$RefSeq)) {
   cat("
       create_RefSeqBED.R [--help] [--exons==<path to UCSC BED file with exons>] [--introns==<path to UCSC BED file with introns>] [--RefSeq==<path to file with custom RefSeq annotation>]
       
