@@ -20,14 +20,14 @@ print("ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/annotation/GRCh37_latest/refs
 system("wget ftp://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/annotation/GRCh37_latest/refseq_identifiers/GRCh37_latest_genomic.gff.gz")
 print("NCBI RefSeq GRCh37 retrieved.")
 
-system("Reading GFF file...")
+print("Reading GFF file...")
 refseq_gff<-read.gff("GRCh37_latest_genomic.gff.gz",
                      na.strings = c(".", "?"), GFF3 = TRUE) %>%
   filter(type=="mRNA" | type=="CDS") %>%
   cbind(data.frame(str_split_fixed(.$attributes, ";", 10)))
 
 # 1) get gene names (they can be at columns 6, 7, 8 and 9)
-system("Getting Gene names and RefSeq transcripts.")
+print("Getting Gene names and RefSeq transcripts.")
 gene_name6<-unlist(str_extract(refseq_gff$X6, "(?<=gene\\=)(.*?)$"))
 gene_name7<-unlist(str_extract(refseq_gff$X7, "(?<=gene\\=)(.*?)$"))
 gene_name8<-unlist(str_extract(refseq_gff$X8, "(?<=gene\\=)(.*?)$"))
@@ -48,7 +48,7 @@ refseq_df<-data.frame(gene_name, refseq_nm_np) %>%
   filter(!is.na(refseq_nm_np)) %>% #remove genes without NM_ or NP_
   filter(!grepl("YP", refseq_nm_np)) #remove genes with YP_
 
-system("Output NCBI RefSeq transcripts.")
+print("Output NCBI RefSeq transcripts.")
 RefSeq<-data.frame(HGNC_symbol=refseq_df$gene_name[grep("NM_", refseq_df$refseq_nm_np)],
                    refSeq_mRNA=refseq_df$refseq_nm_np[grep("NM_", refseq_df$refseq_nm_np)],
                    refSeq_protein=refseq_df$refseq_nm_np[grep("NP_", refseq_df$refseq_nm_np)],
@@ -62,7 +62,8 @@ system("rm GRCh37_latest_genomic.gff.gz")
 #______________________________________________
 # alternative names
 #______________________________________________
-system("Reading GRCh37 vs GRCh38 genes that changed their names...")
+print("Getting GRCh37 vs GRCh38 list of genes that changed their names...")
+system("wget https://raw.githubusercontent.com/jpmtavares/GENEVA/master/annotations/grch37vs38.txt")
 grch37vs38_table<-read.delim("grch37vs38.txt", header=T)
 
 final38<-inner_join(RefSeq, grch37vs38_table, by=c(HGNC_symbol="GRCh38"))
@@ -70,7 +71,7 @@ names(final38)[ncol(final38)]<-"HGNC_alternative_symbol"
 final37<-inner_join(RefSeq, grch37vs38_table, by=c(HGNC_symbol="GRCh37"))
 names(final37)[ncol(final37)]<-"HGNC_alternative_symbol"
 
-system("Join GRCh37vsGRCh38 list of genes with NCBI RefSeq transcripts output.")
+print("Join GRCh37vsGRCh38 list of genes with NCBI RefSeq transcripts output.")
 grch37vs38<-rbind(final38, final37) %>%
   dplyr::select(HGNC_symbol, HGNC_alternative_symbol) %>%
   unique %>%
@@ -97,7 +98,7 @@ Ensembl_info<-getBM(attributes = c('chromosome_name','hgnc_symbol', 'ensembl_gen
 names(Ensembl_info)<-c("HGNC_symbol_ensembl", "ENSGene", "ENSTranscript", "refSeq_mRNA_noVersion", "refSeq_protein_noVersion")
 print("BioMart retrieved.")
 
-system("Join Ensembl information with NCBI RefSeq transcripts output.")
+print("Join Ensembl information with NCBI RefSeq transcripts output.")
 # inner join HGNC_symbol_ensembl == HGNC_symbol
 Ensembl_symbol<-inner_join(grch37vs38, Ensembl_info, by=c("HGNC_symbol"="HGNC_symbol_ensembl",
                                                          "refSeq_mRNA_noVersion", "refSeq_protein_noVersion")) 
@@ -120,7 +121,7 @@ names(Ensembl)<-c("HGNC_symbol", "refSeq_mRNA", "refSeq_protein", "refSeq_mRNA_n
 #______________________________________________
 # get LRG IDs
 #______________________________________________
-system("Getting LRG transcripts...")
+print("Getting LRG transcripts...")
 lrg_bed<-read_bed("ftp://ftp.ebi.ac.uk/pub/databases/lrgex/LRG_GRCh37.bed",
                   n_fields = 12)
 
@@ -137,7 +138,7 @@ names(lrg_df)<-c("LRG_id", "refSeq_mRNA")
 lrg_df$refSeq_mRNA_noVersion<-str_extract(lrg_df$refSeq_mRNA, "(.*?)(?=\\.)")
 
 # left join with Ensembl and lrg_df
-system("Join LRG transcripts with NCBI RefSeq transcripts output.")
+print("Join LRG transcripts with NCBI RefSeq transcripts output.")
 LRG<-left_join(Ensembl, lrg_df, by=c("refSeq_mRNA_noVersion")) %>%
   unique %>%
   dplyr::select(-refSeq_mRNA.y)
@@ -147,11 +148,12 @@ names(LRG)<-c("HGNC_symbol", "refSeq_mRNA", "refSeq_protein", "refSeq_mRNA_noVer
 #______________________________________________
 # get clinical transcripts
 #______________________________________________
-system("Getting clinical transcripts...")
+print("Getting clinical transcripts...")
+system("wget https://raw.githubusercontent.com/jpmtavares/GENEVA/master/annotations/RefSeq_clinical_transcripts.txt")
 clinical_table<-read.delim("RefSeq_clinical_transcripts.txt", header=T)
 
 #left join with LRG and clinical transcripts 
-system("Join clinical transcripts with NCBI RefSeq transcripts output.")
+print("Join clinical transcripts with NCBI RefSeq transcripts output.")
 clinical<-left_join(LRG, clinical_table, by=c("refSeq_mRNA_noVersion", "refSeq_protein_noVersion",
                                               "ENSGene", "ENSTranscript")) %>%
   unique %>%
@@ -166,11 +168,14 @@ clinical<-clinical %>%
                 refSeq_mRNA, refSeq_protein,
                 refSeq_mRNA_noVersion, refSeq_protein_noVersion,
                 ENSGene, ENSTranscript,
-                LRG_id, clinical_transcript)
+                LRG_id, clinical_transcript) %>%
+  unique
 
+system("rm RefSeq_clinical_transcripts.txt")
 #______________________________________________
 # WARNINGS...
 #______________________________________________
+print("Getting warnings...")
 geneswithoutNM_Ensembl<-Ensembl %>%
   group_by(HGNC_symbol) %>%
   mutate(geneswithoutNM_Ensembl=ifelse(any(is.na(ENSGene) == FALSE),
@@ -193,5 +198,7 @@ names(warning)[ncol(warning)]<-"geneswithoutNM_Ensembl"
 #______________________________________________
 # write.tables
 #______________________________________________
+print("Output files...")
 write.table(clinical, "RefSeqGRCh37_Ensembl_LRG_clinical.txt", col.names=T, row.names=F, quote = F, sep="\t")
 write.table(warning, "RefSeqGRCh37_Ensembl_LRG_clinical.checklist.txt", col.names=T, row.names=F, quote = F, sep="\t")
+print("Finished! Bye.")
