@@ -20,7 +20,7 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
 
   Create NCBI RefSeq BED file with clinical transcripts information. This script accepts RefSeq BED files (hg19) from UCSC Table Browser `--exons=="path/to/exons.bed"` and `--introns=="path/to/introns.bed"`, as well as a BED file with [RefSeq, Ensembl, LRG and clinical information](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeqGRCh37_Ensembl_LRG_clinical.txt) `--RefSeq==path/to/RefSeqGRCh37_Ensembl_LRG_clinical.txt`. The output file contains information about: `Chr`, `Start 1-based`, `End`, `Rank.Exons.Introns`, `Strand`, `HGNC_symbol`, `HGNC_alternative_symbol`,  `ENSGene`, `ENSTranscript`, `refSeq_mRNA` and `refSeq_protein`, `refSeq_mRNA_noVersion`, `refSeq_protein_noVersion`, `LRG_id`.
   
-  **usage**: `create_RefSeq.R --exons=="path/to/exons.bed" --introns=="path/to/introns.bed" --clinical=="path/to/clinical_transcripts.txt"`
+  **usage**: `create_RefSeq.R --exons=="path/to/exons.bed" --introns=="path/to/introns.bed" --RefSeq=="path/to/RefSeqGRCh37_Ensembl_LRG_clinical.txtt"`
  
 ## get_scripts
 * [get_clinvar.R](https://github.com/jpmtavares/GENEVA/blob/master/get_scripts/get_clinvar.R)
