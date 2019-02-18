@@ -49,12 +49,13 @@ if("--help" %in% args | is.null(args$exons) | is.null(args$introns) | is.null(ar
 
 # SETUP
 #________________________________________________________
+print("Reading input files...")
 exons<-read.delim(args[["exons"]], header= F)
 introns<-read.delim(args[["introns"]], header= F)
 RefSeq<-read.delim(args[["RefSeq"]], header = TRUE)
 filename<-"RefSeqGRCh37"
 filename_clinical<-"RefSeqGRCh37_clinical"
-
+print("Done.")
 ################################################################
 # 1) join exons and introns
 ################################################################
@@ -75,6 +76,7 @@ names(genes)<-c("Chr", "Start", "End", "Transcripts", "Region", "Rank", "Strand"
 ################################################################
 # 3) correct Region order in minus Strand and add clinical transcripts information
 ################################################################
+print("Correct Region order in minus Strand...")
 bed<-genes %>%
   mutate(Start=Start+1) %>% #get 1-based document
   mutate(Region=ifelse(Region=="exon", "E", "I")) %>%
@@ -93,6 +95,7 @@ bed<-genes %>%
          refSeq_mRNA_noVersion, refSeq_protein_noVersion, LRG_id, clinical_transcript)
 
 # get only clinical transcripts
+print("Add clinical transcript infomation...")
 bed_clinical<-bed %>%
   filter(clinical_transcript=="yes") %>%
   dplyr::select(-clinical_transcript)
@@ -108,13 +111,15 @@ bed_clinical$End <-format(bed_clinical$End, scientific = FALSE, trim=T)
 # 4) write-table
 ################################################################
 dir.create("RefSeq_annotation/", showWarnings = TRUE, recursive = FALSE)
-
+print("Output files in RefSeq_annotation/...")
 write.table(bed, paste("RefSeq_annotation/", filename, ".bed", sep=""), col.names=F, row.names=F, quote=F, sep="\t")
 write.table(bed_clinical, paste("RefSeq_annotation/", filename_clinical, ".bed", sep=""), col.names=F, row.names=F, quote=F, sep="\t")
 
 ################################################################
 # 6) sort BED file, create BED for coverage analysis and indexed it
 ################################################################
+print("Only the files with clinical transcripts are being sorted and tabixed...")
+print("Uncomment script to get full file RefSeqGRCh37.bed sorted and tabixed.")
 #system(paste("sort -k1,1 -k2,2n -k3,3n", paste("RefSeq_annotation/", filename, ".bed", sep=""), ">", paste("RefSeq_annotation/", filename, "_sort.bed", sep=""), sep=" "))
 system(paste("sort -k1,1 -k2,2n -k3,3n", paste("RefSeq_annotation/", filename_clinical, ".bed", sep=""), ">", paste("RefSeq_annotation/", filename_clinical, "_sort.bed", sep=""), sep=" "))
 
@@ -128,3 +133,4 @@ system(paste("bgzip", paste("RefSeq_annotation/", filename_clinical, "_sort.bed"
 
 #system(paste("tabix -b 2 -e 3", paste("RefSeq_annotation/", filename, "_sort.bed.gz", sep=""), sep=" "))
 system(paste("tabix -b 2 -e 3", paste("RefSeq_annotation/", filename_clinical, "_sort.bed.gz", sep=""), sep=" "))
+print("Finished! Bye.")
