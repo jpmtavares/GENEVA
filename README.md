@@ -16,9 +16,9 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
   List of genes that changed their names between genome versions GRCh37 and GRCh38. This list was retrieved from Ensembl. 
   
 ## create_scripts
-* [create_RefSeq.R](https://github.com/jpmtavares/GENEVA/blob/master/create_scripts/create_RefSeq.R)
+* [create_RefSeqBED.R](https://github.com/jpmtavares/GENEVA/blob/master/create_scripts/create_RefSeqBED.R)
 
-  Create NCBI RefSeq BED file with clinical transcripts information. This script accepts RefSeq BED files (hg19) from UCSC Table Browser `--exons=="path/to/exons.bed"` and `--introns=="path/to/introns.bed"`, as well as a BED file with [clinical transcripts](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeq_clinical_transcripts.txt) `--clinical==path/to/clinical_transcripts.txt`. The output file contains information about: `Chr`, `Start 1-based`, `End`, `Rank.Exons.Introns`, `Strand`, `HGNC_symbol`,  `ENSGene`, `ENSTranscript`, `refSeq_mRNA` and `refSeq_protein`.
+  Create NCBI RefSeq BED file with clinical transcripts information. This script accepts RefSeq BED files (hg19) from UCSC Table Browser `--exons=="path/to/exons.bed"` and `--introns=="path/to/introns.bed"`, as well as a BED file with [RefSeq, Ensembl, LRG and clinical information](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeqGRCh37_Ensembl_LRG_clinical.txt) `--RefSeq==path/to/RefSeqGRCh37_Ensembl_LRG_clinical.txt`. The output file contains information about: `Chr`, `Start 1-based`, `End`, `Rank.Exons.Introns`, `Strand`, `HGNC_symbol`, `HGNC_alternative_symbol`,  `ENSGene`, `ENSTranscript`, `refSeq_mRNA` and `refSeq_protein`, `refSeq_mRNA_noVersion`, `refSeq_protein_noVersion`, `LRG_id`.
   
   **usage**: `create_RefSeq.R --exons=="path/to/exons.bed" --introns=="path/to/introns.bed" --clinical=="path/to/clinical_transcripts.txt"`
  
