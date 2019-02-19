@@ -25,6 +25,8 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
  * [create_RefSeqGRCh37_Ensembl_LRG_clinical.R](https://github.com/jpmtavares/GENEVA/blob/master/create_scripts/create_RefSeqGRCh37_Ensembl_LRG_clinical.R)
  
    Creates [RefSeqGRCh37_Ensembl_LRG_clinical.txt](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeqGRCh37_Ensembl_LRG_clinical.txt). This script downloads NCBI RefSeq GRCh37 from [here](https://www.ncbi.nlm.nih.gov/projects/genome/guide/human/index.shtml), integrates [GRCh37vs38](https://github.com/jpmtavares/GENEVA/blob/master/annotations/grch37vs38.txt), gets Ensembl Gene and Transcripts IDs from BioMart, gets LRG GRCh37 transcripts from [here](https://www.lrg-sequence.org/data/), and integrates manually curated [clinical transcripts](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeq_clinical_transcripts.txt) from HGMD. It outputs all these information in `RefSeqGRCh37_Ensembl_LRG_clinical.txt` and writes a list of genes without any clinical transcript defined and/or a list of genes without RefSeq_mRNA in `RefSeqGRCh37_Ensembl_LRG_clinical.checklist.txt`. 
+   
+    **usage**: `create_RefSeqGRCh37_Ensembl_LRG_clinical.R`
  
 ## get_scripts
 * [get_clinvar.R](https://github.com/jpmtavares/GENEVA/blob/master/get_scripts/get_clinvar.R)
