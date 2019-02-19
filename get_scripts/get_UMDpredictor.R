@@ -177,13 +177,14 @@ write.table("#Chr\tPos\tRef\tAlt\tHGVS_c\tHGVS_p\tHGNC_symbol\tENSTranscript\tUM
 
 print("Concatenate transcript files...")
 system(paste("cat ./UMD_tmp/header.txt ./UMD_tmp/ENS*.txt > ", filename, ".txt",sep=""))
-sink() # close log file
 
 #########################################################
 # 4) sort otuput file and indexed it
 #########################################################
 print("Sort and Index file.")
-system(paste("sort -k1,1 -k2,2n ", paste(filename,".txt",sep=""), ">", paste(filename, "_sort_header.txt", sep=""), sep=" "))
+system(paste("less", paste(filename,".txt",sep="") , "|", "body sort -k1,1 -k2,2n", "-", ">", paste(filename, "_sort_header.txt", sep=""), sep=" "))
 # index "_sort.txt"
 system(paste("bgzip", paste(filename, "_sort_header.txt", sep=""), sep=" "))
 system(paste("tabix -p vcf", paste(filename, "_sort_header.txt.gz", sep=""), sep=" "))
+
+sink() # close log file
