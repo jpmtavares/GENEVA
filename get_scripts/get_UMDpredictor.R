@@ -8,11 +8,11 @@
 #______________________________________________
 # libraries
 #______________________________________________
-library(readr)
-library(stringr)
-library(biomaRt)
-library(dplyr)
-library(parallel)
+library(readr, quietly = T)
+library(stringr, quietly = T)
+library(biomaRt, quietly = T)
+library(dplyr, quietly = T, warn.conflicts = F)
+library(parallel, quietly = T)
 #______________________________________________
 # HELP function
 #______________________________________________
@@ -32,14 +32,15 @@ args <- argsL
 rm(argsL)
 
 # Default setting when no all arguments passed or help needed
-if("--help" %in% args | is.null(args$ENSTranscripts)) {
+if("--help" %in% args | is.null(args$RefSeq)) {
   cat("
-      get_UMDpredictor.R [--help] [--ENSTranscripts==<list of Ensembl transcripts ID>]
+      get_UMDpredictor.R [--help] [--RefSeq==<RefSeq GRCh37 annotation file>] [--column==<number of column with ENSTranscripts>]
 
       -- program to get umd-predictor.eu prediction scores for a list of Ensembl Transcripts IDs --
       
       where:
-      --ENSTranscripts                    list of Ensembl transcripts IDs\n\n")
+      --RefSeq                             RefSeq GRCh37 annotation file
+      --column                             [default: script will look for a column named ENSTranscript] number of column with ENSTranscripts\n\n")
   
   q(save="no")
 }
@@ -123,7 +124,22 @@ sink(file = "log.txt", append = FALSE, type = c("output"),
 #________________________________________________________
 # SETUP
 #________________________________________________________
-transcripts<-read.delim(args[["ENSTranscripts"]], header=F)
+transcripts<-read.delim(args[["RefSeq"]], header=T)
+
+if(is.null(args$column)){
+  tryCatch({
+    transcripts<-transcripts["ENSTranscript"]
+    print("ENSTranscript column was found in input file.")
+  },
+  error=function(e){print("There's no column named ENSTranscript. Please choose --column parameter.")})
+} else{
+  if(any(grep("ENST", transcripts[,as.numeric(as.character(args$column))]))){
+    transcripts<-transcripts[,as.numeric(as.character(args$column))]
+  } else{
+    stop(paste("Column number", as.numeric(as.character(args$column)), "is not ENSTranscript column. Please choose another column number.", sep=" "))
+  }
+}
+
 filename<-"UMD-predictor_clinical_transcripts"
 
 #########################################################
