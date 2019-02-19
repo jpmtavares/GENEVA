@@ -101,10 +101,10 @@ print("BioMart retrieved.")
 print("Join Ensembl information with NCBI RefSeq transcripts output.")
 # inner join HGNC_symbol_ensembl == HGNC_symbol
 Ensembl_symbol<-inner_join(grch37vs38, Ensembl_info, by=c("HGNC_symbol"="HGNC_symbol_ensembl",
-                                                         "refSeq_mRNA_noVersion", "refSeq_protein_noVersion")) 
+                                                          "refSeq_mRNA_noVersion", "refSeq_protein_noVersion")) 
 # inner join HGNC_symbol_ensembl == HGNC_alternative_symbol
 Ensembl_alternative_symbol<-inner_join(grch37vs38, Ensembl_info, by=c("HGNC_alternative_symbol"="HGNC_symbol_ensembl",
-                                                                     "refSeq_mRNA_noVersion", "refSeq_protein_noVersion")) 
+                                                                      "refSeq_mRNA_noVersion", "refSeq_protein_noVersion")) 
 # add two tables
 Ensembl_join<-rbind(Ensembl_symbol, Ensembl_alternative_symbol) %>%
   unique
@@ -154,16 +154,33 @@ clinical_table<-read.delim("RefSeq_clinical_transcripts.txt", header=T)
 
 #left join with LRG and clinical transcripts 
 print("Join clinical transcripts with NCBI RefSeq transcripts output.")
-clinical<-left_join(LRG, clinical_table, by=c("refSeq_mRNA_noVersion", "refSeq_protein_noVersion",
+
+# get clinical transcripts without ENSEMBL IDs
+clinical_withoutEnsembl<-LRG %>%
+  filter(is.na(ENSTranscript)) %>%
+  left_join(., clinical_table, by=c("refSeq_mRNA_noVersion", "refSeq_protein_noVersion")) %>%
+  unique %>%
+  mutate(HGNC_symbol.y=ifelse(is.na(HGNC_symbol.y), "no", "yes")) %>%
+  dplyr::select(-ENSGene.y, -ENSTranscript.y)
+
+names(clinical_withoutEnsembl)<-c("HGNC_symbol", "refSeq_mRNA", "refSeq_protein", "refSeq_mRNA_noVersion",
+                   "refSeq_protein_noVersion", "HGNC_alternative_symbol", "ENSGene", "ENSTranscript",
+                   "LRG_id", "clinical_transcript")
+
+# get clinical transcripts with ENSEMBL IDs
+clinical_withEnsembl<-LRG %>%
+  filter(!is.na(ENSTranscript)) %>%
+  left_join(., clinical_table, by=c("refSeq_mRNA_noVersion", "refSeq_protein_noVersion",
                                               "ENSGene", "ENSTranscript")) %>%
   unique %>%
   mutate(HGNC_symbol.y=ifelse(is.na(HGNC_symbol.y), "no", "yes"))
 
-names(clinical)<-c("HGNC_symbol", "refSeq_mRNA", "refSeq_protein", "refSeq_mRNA_noVersion",
+names(clinical_withEnsembl)<-c("HGNC_symbol", "refSeq_mRNA", "refSeq_protein", "refSeq_mRNA_noVersion",
                    "refSeq_protein_noVersion", "HGNC_alternative_symbol", "ENSGene", "ENSTranscript",
                    "LRG_id", "clinical_transcript")
 
-clinical<-clinical %>% 
+# join clinical transcripts with and without ENSEMBL IDs
+clinical<-rbind(clinical_withEnsembl, clinical_withoutEnsembl) %>%
   dplyr::select(HGNC_symbol, HGNC_alternative_symbol,
                 refSeq_mRNA, refSeq_protein,
                 refSeq_mRNA_noVersion, refSeq_protein_noVersion,
@@ -187,7 +204,7 @@ geneswithoutNM_Ensembl<-Ensembl %>%
 geneswithoutclinical<-clinical %>%
   group_by(HGNC_symbol) %>%
   mutate(geneswithoutclinical=ifelse(any(clinical_transcript %in% "no" == FALSE),
-                                  "all_good", "check_this_gene")) %>%
+                                     "all_good", "check_this_gene")) %>%
   ungroup %>%
   dplyr::select(HGNC_symbol, HGNC_alternative_symbol, geneswithoutclinical) %>%
   unique
