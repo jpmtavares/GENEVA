@@ -18,45 +18,49 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
 ## create_scripts
 * [create_RefSeqBED.R](https://github.com/jpmtavares/GENEVA/blob/master/create_scripts/create_RefSeqBED.R)
 
-  Create NCBI RefSeq BED file with clinical transcripts information. This script accepts RefSeq BED files (hg19) from UCSC Table Browser `--exons=="path/to/exons.bed"` and `--introns=="path/to/introns.bed"`, as well as a BED file with [RefSeq, Ensembl, LRG and clinical information](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeqGRCh37_Ensembl_LRG_clinical.txt) `--RefSeq==path/to/RefSeqGRCh37_Ensembl_LRG_clinical.txt`. The output file contains information about: `Chr`, `Start 1-based`, `End`, `Rank.Exons.Introns`, `Strand`, `HGNC_symbol`, `HGNC_alternative_symbol`,  `ENSGene`, `ENSTranscript`, `refSeq_mRNA` and `refSeq_protein`, `refSeq_mRNA_noVersion`, `refSeq_protein_noVersion`, `LRG_id`.
+  Creates NCBI RefSeq BED file with clinical transcripts information. This script accepts RefSeq BED files (hg19) from UCSC Table Browser `--exons=="path/to/exons.bed"` and `--introns=="path/to/introns.bed"`, as well as a BED file with [RefSeq, Ensembl, LRG and clinical information](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeqGRCh37_Ensembl_LRG_clinical.txt) `--RefSeq==path/to/RefSeqGRCh37_Ensembl_LRG_clinical.txt`. The output file contains information about: `Chr`, `Start 1-based`, `End`, `Rank.Exons.Introns`, `Strand`, `HGNC_symbol`, `HGNC_alternative_symbol`,  `ENSGene`, `ENSTranscript`, `refSeq_mRNA` and `refSeq_protein`, `refSeq_mRNA_noVersion`, `refSeq_protein_noVersion`, `LRG_id`.
   
-  **usage**: `create_RefSeq.R --exons=="path/to/exons.bed" --introns=="path/to/introns.bed" --RefSeq=="path/to/RefSeqGRCh37_Ensembl_LRG_clinical.txtt"`
+  **usage**: `create_RefSeqBED.R --exons=="path/to/exons.bed" --introns=="path/to/introns.bed" --RefSeq=="path/to/RefSeqGRCh37_Ensembl_LRG_clinical.txtt"`
+ 
+ * [create_RefSeqGRCh37_Ensembl_LRG_clinical.R](https://github.com/jpmtavares/GENEVA/blob/master/create_scripts/create_RefSeqGRCh37_Ensembl_LRG_clinical.R)
+ 
+   Creates [RefSeqGRCh37_Ensembl_LRG_clinical.txt](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeqGRCh37_Ensembl_LRG_clinical.txt). This script downloads NCBI RefSeq GRCh37 from [here](https://www.ncbi.nlm.nih.gov/projects/genome/guide/human/index.shtml), integrates [GRCh37vs38](https://github.com/jpmtavares/GENEVA/blob/master/annotations/grch37vs38.txt), gets Ensembl Gene and Transcripts IDs from BioMart, gets LRG GRCh37 transcripts from [here](https://www.lrg-sequence.org/data/), and integrates manually curated [clinical transcripts](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeq_clinical_transcripts.txt) from HGMD. It outputs all these information in `RefSeqGRCh37_Ensembl_LRG_clinical.txt` and writes a list of genes without any clinical transcript defined and/or a list of genes without RefSeq_mRNA in `RefSeqGRCh37_Ensembl_LRG_clinical.checklist.txt`. 
  
 ## get_scripts
 * [get_clinvar.R](https://github.com/jpmtavares/GENEVA/blob/master/get_scripts/get_clinvar.R)
 
-  Get ClinVar GRCh37 vcf file from ClinVar. This script runs with default values for downloading ClinVar directory, and [vcfanno](https://github.com/brentp/vcfanno) configuration file directory. These parameters can be chosen:
+  Gets ClinVar GRCh37 vcf file from ClinVar. This script runs with default values for downloading ClinVar directory, and [vcfanno](https://github.com/brentp/vcfanno) configuration file directory. These parameters can be chosen:
   
   **usage**: `get_clinvar.R <ClinVar download directory> <vcfanno config file directory>`
   
  * [get_genesCoordinates.py](https://github.com/jpmtavares/GENEVA/blob/master/get_scripts/get_genesCoordinates.py) 
 
-    Get the first and last position of a gene. The output is written in a sorted filed by coordinates: `Chr`, `First Position`, `Last Position`, `Gene`. 
+    Gets the first and last position of a gene. The output is written in a sorted filed by coordinates: `Chr`, `First Position`, `Last Position`, `Gene`. 
     
     **usage**: `get_genesCoordinates.py [-h] -genes_file REFSEQ -outname OUT_FILE`
 
 * [get_hgvsnomenclature.py](https://github.com/jpmtavares/GENEVA/blob/master/get_scripts/get_hgvsnomenclature.py)  
 
-    Get the variants that have [HGVS](http://www.hgvs.org/) information (cDNA and protein) from VEP (v.95) output (vcf) with the human genome (hg19). The output is a vcf with: `Chr`, `First Position`, `Last Position`, `RefSeq_mRNA`, `HGVS c.`, `RefSeq_prot`, `HGVS p.`. 
+    Gets the variants that have [HGVS](http://www.hgvs.org/) information (cDNA and protein) from VEP (v.95) output (vcf) with the human genome (hg19). The output is a vcf with: `Chr`, `First Position`, `Last Position`, `RefSeq_mRNA`, `HGVS c.`, `RefSeq_prot`, `HGVS p.`. 
     
     **usage**: `get_hgvsnomenclature.py [-h] -vcf VCFFile -outname OUT_FILE`
 
 * [get_inHousefreq.py](https://github.com/jpmtavares/GENEVA/blob/master/get_scripts/get_inHouseFreq.py)
 
-  Get the number of samples in a VCF file with a given variant (either in homozigosity or heterozigosity) and the corresponding allele frequency. The output is writen in a sorted file containg: `Chr`, `Position`, `Ref`, `Alt`, `Number of samples with variant`, `Number of homozygous samples`, `Allele Frequency`.
+  Gets the number of samples in a VCF file with a given variant (either in homozigosity or heterozigosity) and the corresponding allele frequency. The output is writen in a sorted file containg: `Chr`, `Position`, `Ref`, `Alt`, `Number of samples with variant`, `Number of homozygous samples`, `Allele Frequency`.
   
   **usage**: `get_inHouseFreq.py -vcf <multisample VCF file> -outname <output name>`
   
 * [get_mutationtaster.R](https://github.com/jpmtavares/GENEVA/blob/master/get_scripts/get_mutationtaster.R)
 
-  Get [MutationTaster](http://www.mutationtaster.org/) prediction scores. The output doesn't get transcript information into consideration, presenting unique values for a certain variant. This script accepts an input file with `Chr`, `Position`, `Ref`, `Alt`.
+  Gets [MutationTaster](http://www.mutationtaster.org/) prediction scores. The output doesn't get transcript information into consideration, presenting unique values for a certain variant. This script accepts an input file with `Chr`, `Position`, `Ref`, `Alt`.
   
   **usage**: `get_mutationtaster.R --variants=="path/to/variants_file.txt"`
               can be parallelized with: `find <path/to/variants_files*> | xargs -n1 -P 20 -I {} sh -c 'echo {} && ./get_mutationtaster.R --variants=={}'`
 
 * [get_vcfmerge2freq.sh](https://github.com/jpmtavares/GENEVA/blob/master/get_scripts/get_vcfmerge2freq.sh)
 
-  Get multisample VCF file with [vcf-merge](http://vcftools.sourceforge.net/perl_module.html#vcf-merge), split file by chromosome, and calculates allele frequency with `get_inHousefreq.py`. This script runs with default values for every parameter:
+  Gets multi-sample VCF file with [vcf-merge](http://vcftools.sourceforge.net/perl_module.html#vcf-merge), split file by chromosome, and calculates allele frequency with `get_inHousefreq.py`. This script runs with default values for every parameter:
   
     Parameter | Default value
     --- | ---
@@ -70,16 +74,26 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
   
 * [get_UMDpredictor.R](https://github.com/jpmtavares/GENEVA/blob/master/get_scripts/get_UMDpredictor.R)
 
-  Get [UMD-predictor](http://umd-predictor.eu/) scores for a list of Ensembl transcripts IDs. The output is written in a sorted file containg: `Chr`, `Position`, `Ref`, `Alt`, `HGVS_c`, `HGVS_p`, `HGNC_symbol`, `ENSTranscript`, `UMD_pred`, `UMD_score`
+  Gets [UMD-predictor](http://umd-predictor.eu/) scores for a list of Ensembl transcripts IDs. The output is written in a sorted file containg: `Chr`, `Position`, `Ref`, `Alt`, `HGVS_c`, `HGVS_p`, `HGNC_symbol`, `ENSTranscript`, `UMD_pred`, `UMD_score`
 
   **usage**: `get_UMDpredictor.R [--help] --ENSTranscripts=="path/to/ENSTranscripts.txt"`
   
   ## pipelines
 * [Allele Frequency](https://github.com/jpmtavares/GENEVA/blob/master/pipelines/GENEVA_AlleleFrequency.sh)
 
-  Download and run `get_vcfmerge2freq.sh` and `get_inHouseFreq.py` in present work directory, which will be used as default directory for getting VCF samples files and output Allele Frequency file.
+  Downloads and runs `get_vcfmerge2freq.sh` and `get_inHouseFreq.py` in present work directory, which will be used as default directory for getting VCF samples files and output Allele Frequency file.
   
   **usage**: `GENEVA_AlleleFrequency.sh`
+  
+* [RefSeq BED annotation files](https://github.com/jpmtavares/GENEVA/blob/master/pipelines/GENEVA_RefSeqBED.sh)
+
+  Downloads RefSeq BED files (hg19) from UCSC Table Browser `exons.bed` and `introns.bed`, as well as, [RefSeqGRCh37_Ensembl_LRG_clinical.txt](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeqGRCh37_Ensembl_LRG_clinical.txt) created with [create_RefSeqGRCh37_Ensembl_LRG_clinical.R](https://github.com/jpmtavares/GENEVA/blob/master/create_scripts/create_RefSeqGRCh37_Ensembl_LRG_clinical.R). It also downloads and runs `create_RefSeqBED.R` and `get_genesCoordinates.py` in present work directory. This pipeline outputs the following files in `RefSeq_annotation/` directory:
+  1) `RefSeqGRCh37.bed` and `RefSeqGRCh37_clinical.bed`, complete file and subset with clinical transcripts respectively.
+  2) `RefSeqGRCh37_clinical_sort.bed.gz` and `RefSeqGRCh37_clinical_sort.bed.gz.tbi`, sorted and indexed BED file with clinical transcripts (uncommented last part of `create_RefSeqBED.R` to change this behaviour).
+  3) `RefSeqGRCh37_clinical_coverage.bed`, input file to use in [coverage analysis](https://github.com/jpmtavares/GENEVA/blob/master/create_scripts/createCoverageDoc.py).
+  4) `RefSeqGRCh37_clinical_coordinates.txt`, file with start and end of each gene in `RefSeqGRCh37_clinical_sort.bed.gz` useful for tabix in posterior analyses.
+  
+  **usage**: `GENEVA_RefSeqBED.sh`
   
   ## utils
 * [checkDiffNameGene.py](https://github.com/jpmtavares/GENEVA/blob/master/utils/checkDiffNameGene.py) 
