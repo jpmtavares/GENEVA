@@ -75,7 +75,7 @@ chmod +x ${genesCoordinates}
 ############################################################
 #   4) Run create_RefSeq.R
 ############################################################
-./get_genesCoordinates.py --refseq RefSeq_annotation/RefSeqGRCh37_clinical_hdr_sort.bed.gz --out_file RefSeq_annotation/RefSeqGRCh37_clinical_coordinates.txt
+less RefSeq_annotation/RefSeqGRCh37_clinical_hdr_sort.bed.gz | body ./get_genesCoordinates.py --refseq - --out_file RefSeq_annotation/RefSeqGRCh37_clinical_coordinates.txt
 
 ############################################################
 #   5) Remove intermediate files
