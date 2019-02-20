@@ -133,17 +133,9 @@ print("Uncomment script to get full file RefSeqGRCh37.bed sorted and tabixed.")
 system(paste("less", paste("RefSeq_annotation/", filename_clinical, "_hdr.bed", sep="") , "|", "body sort -k1,1 -k2,2n", "-", ">", paste("RefSeq_annotation/", filename_clinical, "_hdr_sort.bed", sep=""), sep=" "))
 
 # BED for coverage analysis: Chr    Start    End    Gene,Region,Strand,ENSGene,ENSTranscript,RefSeqNM
-#system(paste("awk 'NF{NF-=1};1'", paste("RefSeq_annotation/", filename, "_sort.bed", sep=""), "| uniq | awk '{ print $1\"\t\"$2\"\t\"$3\"\t\"$6\",\"$4\",\"$5\",\"$8\",\"$9\",\"$10}' | sed -r 's/\\s+/\\t/g' >", paste("RefSeq_annotation/", filename, "_coverage.bed", sep=""), sep=" "))
-#system(paste("awk 'NF{NF-=1};1'", paste("RefSeq_annotation/", filename_clinical, "_sort.bed", sep=""), "| uniq | awk '{ print $1\"\t\"$2\"\t\"$3\"\t\"$6\",\"$4\",\"$5\",\"$8\",\"$9\",\"$10}' | sed -r 's/\\s+/\\t/g' >", paste("RefSeq_annotation/", filename_clinical, "_coverage.bed", sep=""), sep=" "))
-#system(paste("less", paste("RefSeq_annotation/", filename, "_hdr_sort.bed", sep=""), "|", 
-#             "body awk 'NF{NF-=1};1' -", "|", "body uniq -", "|", 
-#             "body awk '{ print $1\"\t\"$2\"\t\"$3\"\t\"$6\",\"$4\",\"$5\",\"$8\",\"$9\",\"$10}' -", "|",
-#             "body sed -r 's/\\s+/\\t/g' -", ">", paste("RefSeq_annotation/", filename, "_coverage.bed", sep=""), sep=" "))
+#system(paste("awk 'NF{NF-=1};1'", paste("RefSeq_annotation/", filename, "_hdr_sort.bed", sep=""), "| uniq | awk '{ print $1\"\t\"$2\"\t\"$3\"\t\"$6\",\"$4\",\"$5\",\"$8\",\"$9\",\"$10}' | sed -r 's/\\s+/\\t/g' >", paste("RefSeq_annotation/", filename, "_hdr_coverage.bed", sep=""), sep=" "))
+system(paste("awk 'NF{NF-=1};1'", paste("RefSeq_annotation/", filename_clinical, "_hdr_sort.bed", sep=""), "| uniq | awk '{ print $1\"\t\"$2\"\t\"$3\"\t\"$6\",\"$4\",\"$5\",\"$8\",\"$9\",\"$10}' | sed -r 's/\\s+/\\t/g' >", paste("RefSeq_annotation/", filename_clinical, "_hdr_coverage.bed", sep=""), sep=" "))
 
-system(paste("less", paste("RefSeq_annotation/", filename_clinical, "_hdr_sort.bed", sep=""), "|", 
-             "body awk 'NF{NF-=1};1' -", "|", "body uniq -", "|", 
-             "body awk '{ print $1\"\t\"$2\"\t\"$3\"\t\"$6\",\"$4\",\"$5\",\"$8\",\"$9\",\"$10}' -", "|",
-             "body sed -r 's/\\s+/\\t/g' -", ">", paste("RefSeq_annotation/", filename_clinical, "_coverage.bed", sep=""), sep=" "))
 # index "_sort.bed"
 #system(paste("bgzip", paste("RefSeq_annotation/", filename, "_sort.bed", sep=""), sep=" "))
 system(paste("bgzip", paste("RefSeq_annotation/", filename_clinical, "_hdr_sort.bed", sep=""), sep=" "))
