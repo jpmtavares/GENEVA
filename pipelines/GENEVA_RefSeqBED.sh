@@ -7,6 +7,16 @@ set -o pipefail
 #                                                                                     #
 #######################################################################################
 
+# PRINT HEADER AND RUN COMMAND ON THE BODY {{{
+# use it in pipelines, e.g. ps | body grep somepattern
+body() {
+    IFS= read -r header
+    printf '%s\n' "$header"
+    "$@"
+}
+#}}}
+
+
 ############################################################
 #   HELP function
 ############################################################
@@ -72,18 +82,18 @@ chmod +x ${genesCoordinates}
 ############################################################
 ./create_RefSeqBED.R --exons=="exons.bed" --introns=="introns.bed" --RefSeq==${RefSeq}
 #______________________________
-# complete BED file
+# complete BED file - uncomment if needed
 #______________________________
-mkdir RefSeq_annotation/complete/
+#mkdir RefSeq_annotation/complete/
 # 3.1 sort
-less RefSeq_annotation/RefSeqGRCh37_clinical_hdr.bed | body sort -k1,1 -k2,2n - > RefSeq_annotation/complete/RefSeqGRCh37_clinical_hdr_sort.bed
+#less RefSeq_annotation/RefSeqGRCh37_hdr.bed | body sort -k1,1 -k2,2n - > RefSeq_annotation/complete/RefSeqGRCh37_hdr_sort.bed
 
 # 3.2 coverage BED
-awk 'NF{NF-=1};1' RefSeq_annotation/complete/RefSeqGRCh37_clinical_hdr_sort.bed | uniq - | awk '{ print $1"\t"$2"\t"$3"\t"$6","$4","$5","$8","$9","$10}' - | sed -r 's/\s+/\t/g' - > RefSeq_annotation/complete/RefSeqGRCh37_clinical_coverage.bed
+#awk 'NF{NF-=1};1' RefSeq_annotation/complete/RefSeqGRCh37_hdr_sort.bed | uniq - | awk '{ print $1"\t"$2"\t"$3"\t"$6","$4","$5","$8","$9","$10}' - | sed -r 's/\s+/\t/g' - > RefSeq_annotation/complete/RefSeqGRCh37_coverage.bed
 
 # compress file and tabix
-bgzip RefSeq_annotation/complete/RefSeqGRCh37_clinical_hdr_sort.bed
-tabix -b 2 -e 3 RefSeq_annotation/complete/RefSeqGRCh37_clinical_hdr_sort.bed.gz
+#bgzip RefSeq_annotation/complete/RefSeqGRCh37_hdr_sort.bed
+#tabix -b 2 -e 3 RefSeq_annotation/complete/RefSeqGRCh37_hdr_sort.bed.gz
 
 #______________________________
 # clinical BED file
@@ -100,8 +110,10 @@ bgzip RefSeq_annotation/clinical/RefSeqGRCh37_clinical_hdr_sort.bed
 tabix -b 2 -e 3 RefSeq_annotation/clinical/RefSeqGRCh37_clinical_hdr_sort.bed.gz
 
 ############################################################
-#   4) Run create_RefSeq.R
+#   4) Run get_genesCoordinates.py for complete (uncomment if needed) and clinical BED files
 ############################################################
+#./get_genesCoordinates.py --refseq RefSeq_annotation/complete/RefSeqGRCh37_hdr_sort.bed.gz --out_file RefSeq_annotation/complete/RefSeqGRCh37_coordinates.txt
+
 ./get_genesCoordinates.py --refseq RefSeq_annotation/clinical/RefSeqGRCh37_clinical_hdr_sort.bed.gz --out_file RefSeq_annotation/clinical/RefSeqGRCh37_clinical_coordinates.txt
 
 ############################################################
@@ -109,5 +121,7 @@ tabix -b 2 -e 3 RefSeq_annotation/clinical/RefSeqGRCh37_clinical_hdr_sort.bed.gz
 ############################################################
 rm exons.bed
 rm introns.bed
+rm RefSeq_annotation/RefSeqGRCh37.bed
+rm RefSeq_annotation/RefSeqGRCh37_clinical.bed
 rm ${create_RefSeqBED}
 rm ${genesCoordinates}
