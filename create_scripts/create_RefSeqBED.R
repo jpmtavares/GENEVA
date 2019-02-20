@@ -112,21 +112,38 @@ bed_clinical$End <-format(bed_clinical$End, scientific = FALSE, trim=T)
 ################################################################
 dir.create("RefSeq_annotation/", showWarnings = TRUE, recursive = FALSE)
 print("Output files in RefSeq_annotation/...")
+
 write.table(bed, paste("RefSeq_annotation/", filename, ".bed", sep=""), col.names=F, row.names=F, quote=F, sep="\t")
 write.table(bed_clinical, paste("RefSeq_annotation/", filename_clinical, ".bed", sep=""), col.names=F, row.names=F, quote=F, sep="\t")
 
+# add header to final files
+write.table("#Chr\tStart\tEnd\tRegion\tStrand\tHGNC_symbol\tHGNC_alternative_symbol\tENSGene\tENSTranscript\trefSeq_mRNA\trefSeq_protein\trefSeq_mRNA_noVersion\trefSeq_protein_noVersion\tLRG_id",
+            "RefSeq_annotation/header.txt", col.names=F, row.names=F, quote=F, sep="\t")
+system(paste("cat RefSeq_annotation/header.txt", paste("RefSeq_annotation/", filename, ".bed", sep=""), ">",
+             paste("RefSeq_annotation/", filename, ".bed", sep=""), sep=" "))
+system(paste("cat RefSeq_annotation/header.txt", paste("RefSeq_annotation/", filename_clinical, ".bed", sep=""), ">",
+             paste("RefSeq_annotation/", filename_clinical, ".bed", sep=""), sep=" "))
+system("rm RefSeq_annotation/header.txt")
 ################################################################
 # 6) sort BED file, create BED for coverage analysis and indexed it
 ################################################################
 print("Only the files with clinical transcripts are being sorted and tabixed...")
 print("Uncomment script to get full file RefSeqGRCh37.bed sorted and tabixed.")
-#system(paste("sort -k1,1 -k2,2n -k3,3n", paste("RefSeq_annotation/", filename, ".bed", sep=""), ">", paste("RefSeq_annotation/", filename, "_sort.bed", sep=""), sep=" "))
-system(paste("sort -k1,1 -k2,2n -k3,3n", paste("RefSeq_annotation/", filename_clinical, ".bed", sep=""), ">", paste("RefSeq_annotation/", filename_clinical, "_sort.bed", sep=""), sep=" "))
+#system(paste("less", paste("RefSeq_annotation/", filename, ".bed", sep="") , "|", "body sort -k1,1 -k2,2n", "-", ">", paste("RefSeq_annotation/", filename, "_sort.bed", sep=""), sep=" "))
+system(paste("less", paste("RefSeq_annotation/", filename_clinical, ".bed", sep="") , "|", "body sort -k1,1 -k2,2n", "-", ">", paste("RefSeq_annotation/", filename_clinical, "_sort.bed", sep=""), sep=" "))
 
 # BED for coverage analysis: Chr    Start    End    Gene,Region,Strand,ENSGene,ENSTranscript,RefSeqNM
 #system(paste("awk 'NF{NF-=1};1'", paste("RefSeq_annotation/", filename, "_sort.bed", sep=""), "| uniq | awk '{ print $1\"\t\"$2\"\t\"$3\"\t\"$6\",\"$4\",\"$5\",\"$8\",\"$9\",\"$10}' | sed -r 's/\\s+/\\t/g' >", paste("RefSeq_annotation/", filename, "_coverage.bed", sep=""), sep=" "))
-system(paste("awk 'NF{NF-=1};1'", paste("RefSeq_annotation/", filename_clinical, "_sort.bed", sep=""), "| uniq | awk '{ print $1\"\t\"$2\"\t\"$3\"\t\"$6\",\"$4\",\"$5\",\"$8\",\"$9\",\"$10}' | sed -r 's/\\s+/\\t/g' >", paste("RefSeq_annotation/", filename_clinical, "_coverage.bed", sep=""), sep=" "))
+#system(paste("awk 'NF{NF-=1};1'", paste("RefSeq_annotation/", filename_clinical, "_sort.bed", sep=""), "| uniq | awk '{ print $1\"\t\"$2\"\t\"$3\"\t\"$6\",\"$4\",\"$5\",\"$8\",\"$9\",\"$10}' | sed -r 's/\\s+/\\t/g' >", paste("RefSeq_annotation/", filename_clinical, "_coverage.bed", sep=""), sep=" "))
+#system(paste("less", paste("RefSeq_annotation/", filename, "_sort.bed", sep=""), "|", 
+#             "body awk 'NF{NF-=1};1' -", "|", "body uniq -", "|", 
+#             "body awk '{ print $1\"\t\"$2\"\t\"$3\"\t\"$6\",\"$4\",\"$5\",\"$8\",\"$9\",\"$10}' -", "|",
+#             "body sed -r 's/\\s+/\\t/g' -", ">", paste("RefSeq_annotation/", filename, "_coverage.bed", sep=""), sep=" "))
 
+system(paste("less", paste("RefSeq_annotation/", filename_clinical, "_sort.bed", sep=""), "|", 
+             "body awk 'NF{NF-=1};1' -", "|", "body uniq -", "|", 
+             "body awk '{ print $1\"\t\"$2\"\t\"$3\"\t\"$6\",\"$4\",\"$5\",\"$8\",\"$9\",\"$10}' -", "|",
+             "body sed -r 's/\\s+/\\t/g' -", ">", paste("RefSeq_annotation/", filename_clinical, "_coverage.bed", sep=""), sep=" "))
 # index "_sort.bed"
 #system(paste("bgzip", paste("RefSeq_annotation/", filename, "_sort.bed", sep=""), sep=" "))
 system(paste("bgzip", paste("RefSeq_annotation/", filename_clinical, "_sort.bed", sep=""), sep=" "))
