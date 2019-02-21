@@ -91,7 +91,8 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
 
   Downloads RefSeq BED files (hg19) from UCSC Table Browser `exons.bed` and `introns.bed`, as well as, [RefSeqGRCh37_Ensembl_LRG_clinical.txt](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeqGRCh37_Ensembl_LRG_clinical.txt) created with [create_RefSeqGRCh37_Ensembl_LRG_clinical.R](https://github.com/jpmtavares/GENEVA/blob/master/create_scripts/create_RefSeqGRCh37_Ensembl_LRG_clinical.R). It also downloads and runs `create_RefSeqBED.R` and `get_genesCoordinates.py` in present work directory. This pipeline outputs the following files in `RefSeq_annotation/` directory:
 
-  1) **clinical/** (uncomment script to write the same outputs for complete BED)
+1) **clinical/** (uncomment script to write the same outputs for complete BED)
+  
   
   * `RefSeqGRCh37_clinical_coordinates.txt`, file with start and end of each gene in `RefSeqGRCh37_clinical_sort.bed.gz` useful for tabix in posterior analyses.
   * `RefSeqGRCh37_clinical_coverage.bed`, input file to use in [coverage analysis](https://github.com/jpmtavares/GENEVA/blob/master/create_scripts/createCoverageDoc.py).
