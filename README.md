@@ -93,9 +93,9 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
 
   1) **clinical/** (uncomment script to write the same outputs for complete BED)
   
-  `RefSeqGRCh37_clinical_coordinates.txt`, file with start and end of each gene in `RefSeqGRCh37_clinical_sort.bed.gz` useful for tabix in posterior analyses.
-  `RefSeqGRCh37_clinical_coverage.bed`, input file to use in [coverage analysis](https://github.com/jpmtavares/GENEVA/blob/master/create_scripts/createCoverageDoc.py).
-  `RefSeqGRCh37_clinical_hdr_sort.bed.gz` and `RefSeqGRCh37_clinical_hdr_sort.bed.gz.tbi`, sorted and indexed BED file with clinical transcripts
+  * `RefSeqGRCh37_clinical_coordinates.txt`, file with start and end of each gene in `RefSeqGRCh37_clinical_sort.bed.gz` useful for tabix in posterior analyses.
+  * `RefSeqGRCh37_clinical_coverage.bed`, input file to use in [coverage analysis](https://github.com/jpmtavares/GENEVA/blob/master/create_scripts/createCoverageDoc.py).
+  * `RefSeqGRCh37_clinical_hdr_sort.bed.gz` and `RefSeqGRCh37_clinical_hdr_sort.bed.gz.tbi`, sorted and indexed BED file with clinical transcripts
   
   **usage**: `GENEVA_RefSeqBED.sh`
   
