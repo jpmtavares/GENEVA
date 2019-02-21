@@ -90,10 +90,11 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
 * [RefSeq BED annotation files](https://github.com/jpmtavares/GENEVA/blob/master/pipelines/GENEVA_RefSeqBED.sh)
 
   Downloads RefSeq BED files (hg19) from UCSC Table Browser `exons.bed` and `introns.bed`, as well as, [RefSeqGRCh37_Ensembl_LRG_clinical.txt](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeqGRCh37_Ensembl_LRG_clinical.txt) created with [create_RefSeqGRCh37_Ensembl_LRG_clinical.R](https://github.com/jpmtavares/GENEVA/blob/master/create_scripts/create_RefSeqGRCh37_Ensembl_LRG_clinical.R). It also downloads and runs `create_RefSeqBED.R` and `get_genesCoordinates.py` in present work directory. This pipeline outputs the following files in `RefSeq_annotation/` directory:
-  1) `RefSeqGRCh37.bed` and `RefSeqGRCh37_clinical.bed`, complete file and subset with clinical transcripts respectively.
-  2) `RefSeqGRCh37_clinical_sort.bed.gz` and `RefSeqGRCh37_clinical_sort.bed.gz.tbi`, sorted and indexed BED file with clinical transcripts (uncommented last part of `create_RefSeqBED.R` to change this behaviour).
-  3) `RefSeqGRCh37_clinical_coverage.bed`, input file to use in [coverage analysis](https://github.com/jpmtavares/GENEVA/blob/master/create_scripts/createCoverageDoc.py).
-  4) `RefSeqGRCh37_clinical_coordinates.txt`, file with start and end of each gene in `RefSeqGRCh37_clinical_sort.bed.gz` useful for tabix in posterior analyses.
+
+  1) clinical/ (uncomment script to write the same outputs for complete BED)
+  `RefSeqGRCh37_clinical_coordinates.txt`, file with start and end of each gene in `RefSeqGRCh37_clinical_sort.bed.gz` useful for tabix in posterior analyses.
+  `RefSeqGRCh37_clinical_coverage.bed`, input file to use in [coverage analysis](https://github.com/jpmtavares/GENEVA/blob/master/create_scripts/createCoverageDoc.py).
+  `RefSeqGRCh37_clinical_hdr_sort.bed.gz` and `RefSeqGRCh37_clinical_hdr_sort.bed.gz.tbi`, sorted and indexed BED file with clinical transcripts
   
   **usage**: `GENEVA_RefSeqBED.sh`
   
