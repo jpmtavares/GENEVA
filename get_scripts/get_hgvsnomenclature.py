@@ -35,6 +35,7 @@ def getOutput(vcfin, vcfout):
 	for line in vcf:
 		if not line.startswith("#") and "HGVS" in line:
 			aux=line.rstrip().split("\t")[13]
+			rs_id=line.rstrip().split("\t")[0]
 			chro_pos=line.rstrip().split("\t")[1]
 			chro=chro_pos.split(":")[0]
 			pos=chro_pos.split(":")[1]
@@ -50,8 +51,7 @@ def getOutput(vcfin, vcfout):
 					outwarn.write(line)
 				warn=True
 			else:
-				if "-" in gref:
-					gref=getAlleleRef(chro, pos)
+				if "-" in gref: gref=getAlleleRef(chro, pos)
 				for i in range(len(inf)) :
 					if 'HGVSc' in inf[i]:
 						if ":" in inf[i]:
@@ -63,9 +63,8 @@ def getOutput(vcfin, vcfout):
 							np=inf[i].split(":")[0].replace("HGVSp=","")
 							hgvsp=inf[i].split(":")[1]
 						else:	np=inf[i].replace("HGVSp=","")
-				if "%" in hgvsp:
-					hgvsp=hgvsp.replace("%3D","=")
-				output.write(chro+"\t"+pos+"\t"+gref+"\t"+alt+"\t"+nm+"\t"+hgvsc+"\t"+np+"\t"+hgvsp+"\n")
+				if "%" in hgvsp: hgvsp=hgvsp.replace("%3D","=")
+				output.write(chro+"\t"+pos+"\t"+gref+"\t"+alt+"\t"+nm+"\t"+hgvsc+"\t"+np+"\t"+hgvsp+"\t"+rs_id+"\n")
 	output.close()
 	if warn:
 		outwarn.close()
