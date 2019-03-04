@@ -11,7 +11,7 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
 
   List of RefSeq transcripts used in Human Gene Mutation Database (HGMD). This file was manually curated and contains information about: `HGNC_symbol`,  `ENSGene`, `ENSTranscript`, `refSeq_mRNA` and `refSeq_protein`.
   
-* [GRCh37vs38](https://github.com/jpmtavares/GENEVA/blob/master/annotations/grch37vs38.txt)
+* [GRCh37vs38](https://github.com/jpmtavares/GENEVA/blob/master/annotations/Ensembl.grch37vs38_genes.txt)
   
   List of genes that changed their names between genome versions GRCh37 and GRCh38. This list was retrieved from Ensembl. 
   
