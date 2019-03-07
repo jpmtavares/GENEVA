@@ -7,7 +7,7 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
 
   List of RefSeq GRCh37 transcripts integrated with Ensembl, LRG and [clinical transcripts](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeq_clinical_transcripts.txt). This file was created with [create_RefSeqGRCh37_Ensembl_LRG_clinical.R](https://github.com/jpmtavares/GENEVA/blob/master/create_scripts/create_RefSeqGRCh37_Ensembl_LRG_clinical.R) and contains information about: `HGNC_symbol`,  `HGNC_alternative_symbol`, `refSeq_mRNA`, `refSeq_protein`, `refSeq_mRNA_noVersion`, `refSeq_protein_noVersion`, `ENSGene`, `ENSTranscript`, `LRG_id`, `clinical_transcript`.
   
-* [RefSeq - clinical transcripts](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeq_clinical_transcripts.txt)
+* [grch37.clin.manual.refseq_ensembl.txt](https://github.com/jpmtavares/GENEVA/blob/master/annotations/grch37.clin.manual.refseq_ensembl.txt)
 
   List of RefSeq transcripts used in Human Gene Mutation Database (HGMD). This file was manually curated and contains information about: `HGNC_symbol`,  `ENSGene`, `ENSTranscript`, `refSeq_mRNA` and `refSeq_protein`.
   
