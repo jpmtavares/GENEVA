@@ -5,13 +5,13 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
 ## annotations
 * [RefSeq](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeqGRCh37_Ensembl_LRG_clinical.txt)
 
-  List of RefSeq GRCh37 transcripts integrated with Ensembl, LRG and [clinical transcripts](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeq_clinical_transcripts.txt). This file was created with [create_RefSeqGRCh37_Ensembl_LRG_clinical.R](https://github.com/jpmtavares/GENEVA/blob/master/create_scripts/create_RefSeqGRCh37_Ensembl_LRG_clinical.R) and contains information about: `HGNC_symbol`,  `HGNC_alternative_symbol`, `refSeq_mRNA`, `refSeq_protein`, `refSeq_mRNA_noVersion`, `refSeq_protein_noVersion`, `ENSGene`, `ENSTranscript`, `LRG_id`, `clinical_transcript`.
+  List of RefSeq GRCh37 transcripts integrated with Ensembl, LRG and [clinical transcripts](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeq_clinical_transcripts.txt). This file was created with [create_grch37.refseq_ensembl_lrg_hugo.R](https://github.com/jpmtavares/GENEVA/blob/master/create_scripts/create_grch37.refseq_ensembl_lrg_hugo.R) and contains information about: `HGNC_symbol`,  `HGNC_alternative_symbol`, `refSeq_mRNA`, `refSeq_protein`, `refSeq_mRNA_noVersion`, `refSeq_protein_noVersion`, `ENSGene`, `ENSTranscript`, `LRG_id`, `clinical_transcript`.
   
-* [RefSeq - clinical transcripts](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeq_clinical_transcripts.txt)
+* [grch37.clin.manual.refseq_ensembl.txt](https://github.com/jpmtavares/GENEVA/blob/master/annotations/grch37.clin.manual.refseq_ensembl.txt)
 
   List of RefSeq transcripts used in Human Gene Mutation Database (HGMD). This file was manually curated and contains information about: `HGNC_symbol`,  `ENSGene`, `ENSTranscript`, `refSeq_mRNA` and `refSeq_protein`.
   
-* [GRCh37vs38](https://github.com/jpmtavares/GENEVA/blob/master/annotations/grch37vs38.txt)
+* [GRCh37vs38](https://github.com/jpmtavares/GENEVA/blob/master/annotations/Ensembl.grch37vs38_genes.txt)
   
   List of genes that changed their names between genome versions GRCh37 and GRCh38. This list was retrieved from Ensembl. 
   
@@ -22,7 +22,7 @@ A repository for annotating, interpreting, reporting and visualizing germline SN
   
   **usage**: `create_RefSeqBED.R --exons=="path/to/exons.bed" --introns=="path/to/introns.bed" --RefSeq=="path/to/RefSeqGRCh37_Ensembl_LRG_clinical.txtt"`
  
- * [create_RefSeqGRCh37_Ensembl_LRG_clinical.R](https://github.com/jpmtavares/GENEVA/blob/master/create_scripts/create_RefSeqGRCh37_Ensembl_LRG_clinical.R)
+ * [create_grch37.refseq_ensembl_lrg_hugo.R](https://github.com/jpmtavares/GENEVA/blob/master/create_scripts/create_grch37.refseq_ensembl_lrg_hugo.R)
  
    Creates [RefSeqGRCh37_Ensembl_LRG_clinical.txt](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeqGRCh37_Ensembl_LRG_clinical.txt). This script downloads NCBI RefSeq GRCh37 from [here](https://www.ncbi.nlm.nih.gov/projects/genome/guide/human/index.shtml), integrates [GRCh37vs38](https://github.com/jpmtavares/GENEVA/blob/master/annotations/grch37vs38.txt), gets Ensembl Gene and Transcripts IDs from BioMart, gets LRG GRCh37 transcripts from [here](https://www.lrg-sequence.org/data/), and integrates manually curated [clinical transcripts](https://github.com/jpmtavares/GENEVA/blob/master/annotations/RefSeq_clinical_transcripts.txt) from HGMD. It outputs all these information in `RefSeqGRCh37_Ensembl_LRG_clinical.txt` and writes a list of genes without any clinical transcript defined and/or a list of genes without RefSeq_mRNA in `RefSeqGRCh37_Ensembl_LRG_clinical.checklist.txt`. 
    
