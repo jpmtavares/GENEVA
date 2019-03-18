@@ -107,17 +107,9 @@ if __name__ == "__main__":
     firstpair_raw=firstpair_aux.rstrip().split("/")[-1]
     secondpair_raw=secondpair_aux.rstrip().split("/")[-1]
     raw_name=firstpair_aux.rstrip().split("/")[0]
-    
     samesample(firstpair_raw, secondpair_raw) #function to check the if the pairs are from the same samples 
     outf=checkpairs(firstpair_raw, secondpair_raw) #function to check the pairs (first and reverse, respectively)
-    #if args.name:
-    #    sample_name=args.name
-    #    forward,reverse, sample_name=getName_SampleWithoutName(sample_name, outf)
-    #else: forward, reverse, sample_name=getName_check(firstpair_raw, outf)
     forward, reverse, sample_name=getName_check(firstpair_raw, outf)
-    #outf.write("                        ==>First pair:   " + forward +"\n")
-    #outf.write("                        ==>Second pair:  " + reverse+"\n")
-    #outf.write("[ "+str(datetime.datetime.now().replace(microsecond=0))+" ] "+"Starting the preprocessing with FASTP tool."+"\n")
     batchfile.write(data.strftime('%Y%m%d') + "\t"+plataform+"\t"+batch_name+"\t"+raw_name+"\t"+sample_name+"\n") #mudar a data 20190203
     print(sample_name+","+forward+","+reverse+","+firstpair_raw+","+secondpair_raw+","+raw_name)
     batchfile.close()
