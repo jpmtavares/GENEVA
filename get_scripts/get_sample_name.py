@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Mar  5 16:56:38 2019
-
-@author: brigidameireles
 """
 #!/usr/bin/env python
 import argparse
