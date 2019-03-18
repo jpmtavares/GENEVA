@@ -9,9 +9,20 @@ library(dplyr, quietly = T, warn.conflicts = F)
 library(magrittr, quietly = T)
 library(ape, quietly = T)
 library(valr, quietly = T)
-library(fuzzyjoin, quietly = T)
 library(biomaRt, quietly = T)
 library(lubridate)
+#__________________________________________________________
+# SET GENOMEDARCHIVE and other PATHS
+#__________________________________________________________
+GENOMEDARCHIVE<-"/media/joanatavares/716533eb-f660-4a61-a679-ef610f66feed/"
+if(!dir.exists(GENOMEDARCHIVE)){
+  GENOMEDARCHIVE<-"/genomedarchive/"
+}
+CRICK<-paste(GENOMEDARCHIVE, "Crick_storage/", sep="")
+LOVELACE<-paste(GENOMEDARCHIVE, "Lovelace_decoding/", sep="")
+MENDEL<-paste(GENOMEDARCHIVE, "Mendel_annotating/", sep="")
+
+setwd(MENDEL)
 #______________________________________________
 # create RefSeq annotation NM_ and NP_ 
 #______________________________________________
@@ -343,3 +354,8 @@ cat(paste("[", now("GMT"), "]", "STEP8 Done.\n"))
 cat("Finished! Bye.")
 
 sink()
+
+#______________________________________________
+# version control
+#______________________________________________
+system("./bin/control_versions.sh")
