@@ -4,19 +4,28 @@ Created on Tue Mar  5 16:56:38 2019
 
 @author: brigidameireles
 """
-
 #!/usr/bin/env python
 import argparse
 import datetime
+from datetime import date
 import re
 import sys
 
 parser = argparse.ArgumentParser(description='Get the sample name (input: forward and reverse raw reads). If the sample name is ausent of the raw fastq write the name of the sample in the option -n. If the tool used in preprocessed is changed is necessary change the output of this script')
 parser.add_argument('-f', '--pair1', help='Forward fastq', required=True)
 parser.add_argument('-r', '--pair2', help='Reverse fastq', required=True)
-parser.add_argument('-n', '--name', help='Sample name', required=False)
+parser.add_argument('-p', '--plat', help='Plataform', required=True)
+parser.add_argument('-b', '--batch', help='Batch name', required=True)
 args = parser.parse_args()
 
+def samesample (first, second):
+    
+    f_aux=first.split(".")[0]
+    r_aux=second.split(".")[0]
+    if f_aux[:-1] != r_aux[:-1]:
+        print("ERROR! " + f_aux + " and "+ r_aux + " are not a pair, check the folder where the files are, and then do a new run.")
+        sys.exit()
+    
 def checkformat(file_format):
     form=""    
     if "fastq" in file_format: form="fastq"
@@ -30,7 +39,7 @@ def checkformat(file_format):
 def checkpairs (f_raw, r_raw):
     outname = "log_"
     outf=open(outname, "w")
-    outf.write("[ "+str(datetime.datetime.now().replace(microsecond=0))+" ] "+"STEP1: Checking the input."+"\n")
+    outf.write("[ "+str(datetime.datetime.now().replace(microsecond=0))+" ] "+"Checking the input."+"\n")
 
     try: form=checkformat(f_raw.split(".")[-2])
     except IndexError:         
@@ -62,18 +71,24 @@ def getName_SampleWithoutName (sample_name, outf):
     
 def getName_check (pair1, outf):
     outf.write("[ "+str(datetime.datetime.now().replace(microsecond=0))+" ] "+"Preparing the reads for the preprocessing."+"\n")
-    firstpair=""
-    secondpair=""
-    if pair1.startswith("Sample"): #Sample68006_HM_FDHE19H000077-1a-A60-A67_HWYWFCCXY_L3_1.fq.gz
-        name=pair1.rstrip().split("_")[0:2]
-        sample_name=name[0].replace("Sample","")+"-"+name[1]
+    firstpair="Empty"
+    secondpair="Empty"
+    sample_name="Empty"
+    
+    if pair1.startswith("Sample"): #Sample68006_HM_FDHE19H000077-1a-A60-A67_HWYWFCCXY_L3_1.fq.gz or 
+        if pair1.startswith("Sample_"): name=pair1.rstrip().split("_")[1:3] # Sample_68277_1_BDHE190948587-1A-A3-A51_HJC5CDSXX_L3_1.fq.gz
+        else: name=pair1.rstrip().split("_")[0:2]
+        if re.match("[0-9]", name[1]): sample_name=name[0].replace("Sample","")+"-"+name[1]+"-" #Sample67859_1_DHE17173-1-A96-A56_H7Y5CDSXX_L3_1.fq.gz
+        else: sample_name=name[0].replace("Sample","")+"-"+name[1] 
         firstpair=(sample_name+"_1.fastp.fq.gz")
         secondpair=(sample_name+"_2.fastp.fq.gz")
-    if len(str(pair1.rstrip().split("_")[0]))==6 and len(pair1.rstrip().split("_")[1])==2: #h66887_MH_DHT02688-A4-A61_HT3TNCCXY_L1_2.fq.gz
+    if len(str(pair1.rstrip().split("_")[0]))==6 and len(pair1.rstrip().split("_")[1])<=2: #h66887_MH_DHT02688-A4-A61_HT3TNCCXY_L1_2.fq.gz
         if re.match("^[a-zA-Z]+.*", pair1): #starts with any letter
             name=pair1.rstrip().split("_")[0:2]
             first=str(name[0])[0]
-            sample_name=name[0].replace(first,"")+"-"+name[1]
+            if re.match("[0-9]", name[1]): sample_name=name[0].replace(first,"")+"-"+name[1]+"-" #h67859_1_DHE17173-1-A96-A56_H7Y5CDSXX_L3_1.fq.gz
+            else: 
+                sample_name=name[0].replace(first,"")+"-"+name[1] 
             firstpair=(sample_name+"_1.fastp.fq.gz")
             secondpair=(sample_name+"_2.fastp.fq.gz")
     if len(str(pair1.rstrip().split("_")[0]))==2 and len(pair1.rstrip().split("_")[1])==5: #PS_67859_DHE17173-1-A96-A56_H7Y5CDSXX_L3_1.fq.gz
@@ -84,16 +99,29 @@ def getName_check (pair1, outf):
     return firstpair, secondpair, sample_name
         
 if __name__ == "__main__":
-    firstpair_raw= args.pair1
-    secondpair_raw = args.pair2    
+    firstpair_aux= args.pair1
+    secondpair_aux = args.pair2        
+    plataform = args.plat
+    batch_name = args.batch
+    batchfile = open("sample_batch.info", "a+") #change to definitive directory
+    data=date.today()
     
-    outf=checkpairs(firstpair_raw, secondpair_raw)
-    if args.name:
-        sample_name=args.name
-        forward,reverse, sample_name=getName_SampleWithoutName(sample_name, outf)
-    else: forward, reverse, sample_name=getName_check(firstpair_raw, outf)
-    outf.write("                        ==>First pair:   " + forward +"\n")
-    outf.write("                        ==>Second pair:  " + reverse+"\n")
-    outf.write("[ "+str(datetime.datetime.now().replace(microsecond=0))+" ] "+"STEP2: Starting the preprocessing with FASTP tool."+"\n")
-    print(sample_name+","+forward+","+reverse)
+    firstpair_raw=firstpair_aux.rstrip().split("/")[-1]
+    secondpair_raw=secondpair_aux.rstrip().split("/")[-1]
+    raw_name=firstpair_aux.rstrip().split("/")[0]
+    
+    samesample(firstpair_raw, secondpair_raw) #function to check the if the pairs are from the same samples 
+    outf=checkpairs(firstpair_raw, secondpair_raw) #function to check the pairs (first and reverse, respectively)
+    #if args.name:
+    #    sample_name=args.name
+    #    forward,reverse, sample_name=getName_SampleWithoutName(sample_name, outf)
+    #else: forward, reverse, sample_name=getName_check(firstpair_raw, outf)
+    forward, reverse, sample_name=getName_check(firstpair_raw, outf)
+    #outf.write("                        ==>First pair:   " + forward +"\n")
+    #outf.write("                        ==>Second pair:  " + reverse+"\n")
+    #outf.write("[ "+str(datetime.datetime.now().replace(microsecond=0))+" ] "+"Starting the preprocessing with FASTP tool."+"\n")
+    batchfile.write(data.strftime('%Y%m%d') + "\t"+plataform+"\t"+batch_name+"\t"+raw_name+"\t"+sample_name+"\n") #mudar a data 20190203
+    print(sample_name+","+forward+","+reverse+","+firstpair_raw+","+secondpair_raw+","+raw_name)
+    batchfile.close()
+    outf.close()
     
