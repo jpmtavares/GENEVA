@@ -4,20 +4,21 @@ import re
 from seqseek import Chromosome, BUILD37
 
 parser = argparse.ArgumentParser(description='Get the HGVS nomenclature for each variant.')
-parser.add_argument('-vcf', '--in_vcf', help='Ouptut from VEP, version 95', required=True)
+parser.add_argument('-vcf', '--in_vcf', help='Ouptut from VEP', required=True)
 parser.add_argument('-outname', '--out_file', help='Name of the output file', required=True)
 args = parser.parse_args()
 
 def getAlleleRef(chromo, posi):
 
         if chromo=="X" or chromo=="Y":
-                if chromo=="X": #give an error, the function didn't recognize the 'X'
+                if chromo=="X": #give a stupid error if/he print is correct, the type is correct, but the function didn't recognize the 'X'
                         allele=Chromosome('X').sequence((int(posi)-1),int(posi))
                 else:
                         allele=Chromosome('Y').sequence((int(posi)-1),int(posi))
         else:
                 allele=Chromosome(chromo).sequence((int(posi)-1),int(posi))
-		return allele
+
+        return allele
 
 def getOutput(vcfin, vcfout):
 	lvars=[]
@@ -25,9 +26,9 @@ def getOutput(vcfin, vcfout):
 	hgvsc="-"
 	np="-"
 	nm="-"
-	warn=False #if need, create a warning file
+	warn=False
 	
-	outerro=vcfout+".warning.vcf"
+	outerro=vcfout+".warnings"
 	outfile=vcfout+".vcf"
 	firstLine=True
 	output=open(outfile,"w")
@@ -48,7 +49,7 @@ def getOutput(vcfin, vcfout):
 				if firstLine:
 					outwarn=open(outerro, "w")
 					firstLine=False
-					outwarn.write(line)
+				outwarn.write(line)
 				warn=True
 			else:
 				if "-" in gref: gref=getAlleleRef(chro, pos)
@@ -67,10 +68,11 @@ def getOutput(vcfin, vcfout):
 				output.write(chro+"\t"+pos+"\t"+gref+"\t"+alt+"\t"+nm+"\t"+hgvsc+"\t"+np+"\t"+hgvsp+"\t"+rs_id+"\n")
 	output.close()
 	if warn:
-		outwarn.close()
+		outwarn.close()			
 				
 if __name__=="__main__":
-    inputFile=args.in_vcf
-    outname=args.out_file
 
-    getOutput(inputFile, outname)
+        inputFile=args.in_vcf
+        outname=args.out_file
+	
+	getOutput(inputFile, outname)
