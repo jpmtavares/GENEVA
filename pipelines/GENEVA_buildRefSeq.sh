@@ -38,7 +38,7 @@ set -o pipefail
 # REQUIRED:                                                                           #
 #   - ${LOVELACE}Annotation/Transcripts/grch37.clin.exons.refseq_ensembl_lrg_hugo_v*.bed.gz
 #                                                                                     # 
-#########################################################################################
+#######################################################################################
 
 # PRINT HEADER AND RUN COMMAND ON THE BODY {{{
 # use it in pipelines, e.g. ps | body grep somepattern
