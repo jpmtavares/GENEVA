@@ -77,7 +77,7 @@ file=$(echo ${batch_download##*/}) ##fom var, greedy front trim ##, matches anyt
 cd ${path_crick}Raw/Downloads/
 
 printf -- "Starting the download of: ${file}...\n";
-#wget -c ${batch_download} -S -r --show-progress -o stats.download
+wget -c ${batch_download} -S -r --show-progress -o stats.download
 if grep "FINISHED" stats.download; then 
   batch_name="$(grep 'Saving to' stats.download | cut -d ':' -f2 | cut -d "." -f1 | sed  "s/ ‘//g" | uniq)"
   extract_name="$(grep 'Saving to' stats.download | cut -d ':' -f2 | sed -e "s/ ‘//" -e "s/’//" | uniq)"
