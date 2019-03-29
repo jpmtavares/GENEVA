@@ -1,8 +1,10 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 Created on Tue Mar  5 16:56:38 2019
+
+@author: brigidameireles
 """
-#!/usr/bin/env python
 import argparse
 import datetime
 from datetime import date
@@ -14,6 +16,7 @@ parser.add_argument('-f', '--pair1', help='Forward fastq', required=True)
 parser.add_argument('-r', '--pair2', help='Reverse fastq', required=True)
 parser.add_argument('-p', '--plat', help='Plataform', required=True)
 parser.add_argument('-b', '--batch', help='Batch name', required=True)
+parser.add_argument('-a', '--path', help='Path to the sample_bath.info', required=True)
 args = parser.parse_args()
 
 def samesample (first, second):
@@ -34,10 +37,10 @@ def checkformat(file_format):
             sys.exit()        
     return form
     
-def checkpairs (f_raw, r_raw):
+def checkpairs (f_raw, r_raw, batchname):
     outname = "log_"
     outf=open(outname, "w")
-    outf.write("[ "+str(datetime.datetime.now().replace(microsecond=0))+" ] "+"Checking the input."+"\n")
+    outf.write("[ "+str(datetime.datetime.now().replace(microsecond=0))+" ] "+"Start the analysis for the batch: "+batchname+"\n")
 
     try: form=checkformat(f_raw.split(".")[-2])
     except IndexError:         
@@ -95,23 +98,41 @@ def getName_check (pair1, outf):
             firstpair=(sample_name+"_1.fastp.fq.gz")
             secondpair=(sample_name+"_2.fastp.fq.gz")
     return firstpair, secondpair, sample_name
-        
+
+def addingsampletobatchinfofile (batchfile, plataform, batch_name, raw_name, sample_name):
+    report="okay"
+
+    for line in batchfile: 
+        if sample_name in line: report="samplexist"
+    if report == "okay": batchfile.write(data.strftime('%Y%m%d') + "\t"+plataform+"\t"+batch_name+"\t"+raw_name+"\t"+sample_name+"\n")
+    return report
+    
 if __name__ == "__main__":
     firstpair_aux= args.pair1
     secondpair_aux = args.pair2        
     plataform = args.plat
     batch_name = args.batch
-    batchfile = open("sample_batch.info", "a+") #change to definitive directory
+    path_genomed = args.path
+    batchfile = open(path_genomed+"Source_control/sample_batch.info", "a+") #change to definitive directory
     data=date.today()
     
     firstpair_raw=firstpair_aux.rstrip().split("/")[-1]
     secondpair_raw=secondpair_aux.rstrip().split("/")[-1]
-    raw_name=firstpair_aux.rstrip().split("/")[0]
+    raw_name=firstpair_aux.rstrip().split("/")[-2]
+    
     samesample(firstpair_raw, secondpair_raw) #function to check the if the pairs are from the same samples 
-    outf=checkpairs(firstpair_raw, secondpair_raw) #function to check the pairs (first and reverse, respectively)
+    outf=checkpairs(firstpair_raw, secondpair_raw, batch_name) #function to check the pairs (first and reverse, respectively)
+    #if args.name:
+    #    sample_name=args.name
+    #    forward,reverse, sample_name=getName_SampleWithoutName(sample_name, outf)
+    #else: forward, reverse, sample_name=getName_check(firstpair_raw, outf)
     forward, reverse, sample_name=getName_check(firstpair_raw, outf)
-    batchfile.write(data.strftime('%Y%m%d') + "\t"+plataform+"\t"+batch_name+"\t"+raw_name+"\t"+sample_name+"\n") #mudar a data 20190203
-    print(sample_name+","+forward+","+reverse+","+firstpair_raw+","+secondpair_raw+","+raw_name)
+    #outf.write("                        ==>First pair:   " + forward +"\n")
+    #outf.write("                        ==>Second pair:  " + reverse+"\n")
+    #outf.write("[ "+str(datetime.datetime.now().replace(microsecond=0))+" ] "+"Starting the preprocessing with FASTP tool."+"\n")
+    check_sample=addingsampletobatchinfofile(batchfile, plataform, batch_name, raw_name, sample_name)
+    
+    print(sample_name+","+forward+","+reverse+","+firstpair_raw+","+secondpair_raw+","+raw_name+","+check_sample)
     batchfile.close()
     outf.close()
     
