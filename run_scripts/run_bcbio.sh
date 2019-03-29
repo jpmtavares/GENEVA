@@ -130,6 +130,8 @@ fi
 cd ${LOVELACE}Analysis/${samplename}/bcbio/${samplename}/work
 bcbio_nextgen.py ../config/${samplename}.yaml -n 8
 
+echo "ERROR!!"
+
 # check if bcbio-nextgen run successfully
 finished=$(grep "Timing: finished" ./log/bcbio-nextgen.log)
 if [[ ! -z "$finished" ]]; then
