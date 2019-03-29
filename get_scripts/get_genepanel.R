@@ -135,8 +135,8 @@ genesofinterest<-function(sampleID, genesList){
   #_______________________
   # write STEP and count genes for each sample
   #_______________________
-  cat(paste("[", now("GMT"), "]", "Getting GENE PANEL for", sample,"\n\n"))
-  cat(paste("                       ", "There are", nrow(genes), "gene(s) in", basename(args$fromana),":", paste(genes$HGNC_symbol, collapse=", "), "\n", sep=" "))
+  cat(paste("[", now("GMT"), "]", "Starting Gene Panel for", sample,"\n\n"))
+  cat(paste("                       ", "There are", nrow(genes), "gene(s) in", basename(args$fromana),":", paste(genes$HGNC_symbol, collapse=", "), "\n\n", sep=" "))
   
   #________________________________________________________
   # check if genesList is well-written and has clinical transcripts
@@ -227,7 +227,7 @@ genesofinterest<-function(sampleID, genesList){
   #______________________________________
   # write.file
   #______________________________________
-  cat(paste("                        ", "OUTPUT GENE PANEL: ",
+  cat(paste("\n", "                        ", "OUTPUT GENE PANEL: ",
             paste(unique(sort(c(hgnc_symbol$HGNC_symbol, hgnc_alternative_symbol$HGNC_alternative_symbol))), collapse = ", "),
             "\n",sep=""))
   genes_output<-data.frame(genes=sort(c(hgnc_symbol$HGNC_symbol, hgnc_alternative_symbol$HGNC_alternative_symbol))) %>%
@@ -247,8 +247,8 @@ genesofinterest<-function(sampleID, genesList){
   error = function(e2) {
     write.table(genes_output, paste(CRICK, "Source_control/gene_panel/", sample, "_genepanel.txt", sep = ""),
                 col.names = F, row.names = F, quote = F)
-    cat(paste("[        ERROR!!      ]", "Gene Panel failed for", sample, sep = " "))
-    cat(paste("                       ", "This sample wasn't found in CRICK/Raw or LOVELACE/Raw... please check this."))
+    cat(paste("[        ERROR!!      ]", "Gene Panel failed for", "\n", sample, sep = " "))
+    cat(paste("                       ", "This sample wasn't found in CRICK/Raw or LOVELACE/Raw... please check this.", "\n"))
   })
   
   sink()
