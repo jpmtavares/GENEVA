@@ -75,10 +75,11 @@ CRICK=${GENOMEDARCHIVE}Crick_storage/
 LOVELACE=${GENOMEDARCHIVE}Lovelace_decoding/
 MENDEL=${GENOMEDARCHIVE}Mendel_annotating/
 ##___________________________##
-# Set foward fastq
-Ffastq=$(ls ${LOVELACE}Analysis/${samplename}/fastp/*_1.fastp.fq.gz)
-# Set reverse fastq
-Rfastq=$(ls ${LOVELACE}Analysis/${samplename}/fastp/*_2.fastp.fq.gz)
+# Set foward and reverse fastq if it was not defined by user
+if [[ -z "$Ffastq" || -z "$Rfastq" ]]; then
+  Ffastq=$(ls ${LOVELACE}Analysis/${samplename}/fastp/*_1.fastp.fq.gz)
+  Rfastq=$(ls ${LOVELACE}Analysis/${samplename}/fastp/*_2.fastp.fq.gz)
+fi
 # Set germline analysis by default
 template=$(ls ${LOVELACE}config/grch37.bcbio_germline_v*)
 # Set logsample
