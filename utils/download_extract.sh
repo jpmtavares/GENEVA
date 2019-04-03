@@ -79,8 +79,16 @@ cd ${path_crick}Raw/Downloads/
 printf -- "Starting the download of: ${file}...\n";
 wget -c ${batch_download} -S -r --show-progress -o stats.download
 if grep "FINISHED" stats.download; then 
-  batch_name="$(grep 'Saving to' stats.download | cut -d ':' -f2 | cut -d "." -f1 | sed  "s/ ‘//g" | uniq)"
   extract_name="$(grep 'Saving to' stats.download | cut -d ':' -f2 | sed -e "s/ ‘//" -e "s/’//" | uniq)"
+  if [[ ${extract_name} == */* ]]; then
+    mv ${extract_name} ${path_crick}Raw/Downloads/.
+    folder_rm=$(echo ${extract_name} | cut -d "/" -f1)
+    rm -r ${folder_rm}
+    batch_name=$(echo ${extract_name##*/} | cut -d "." -f1)
+    extract_name=$(echo ${extract_name##*/})
+  else
+    batch_name="$(grep 'Saving to' stats.download | cut -d ':' -f2 | cut -d "." -f1 | sed  "s/ ‘//g" | uniq)"
+  fi
   mv stats.download ${batch_name}.stats.download
   printf -- '\033[32m SUCCESS: Download finished! \033[0m\n';
 else ##improve this, give the last files created: ls -taF | grep "tar"
