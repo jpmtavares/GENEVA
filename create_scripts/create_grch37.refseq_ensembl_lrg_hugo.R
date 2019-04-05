@@ -276,7 +276,7 @@ HUGO<-clinical %>%
   mutate(clinical_transcript=ifelse((n_transcript==1 & clinical_transcript=="no"), "yes_automatic",
                                     #if a gene has more than one transcript
                                     #and has only 1 coding transcript, that transcript is its clinical transcript -> "yes_coding"
-                                    ifelse((n_transcript>1 & length(grep("NM_", refSeq_mRNA))==1), "yes_coding", clinical_transcript))) %>%
+                                    ifelse((n_transcript>1 & length(grep("NM_", refSeq_mRNA))==1 & all(clinical_transcript=="no")), "yes_coding", clinical_transcript))) %>%
   ungroup() %>%
   #if a gene has more than one transcript
   #and has only 1 coding transcript -> "yes_coding", all the remaining NR_ transcripts are not clinical -> "yes_coding"
