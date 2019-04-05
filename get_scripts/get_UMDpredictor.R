@@ -8,8 +8,8 @@
 system(
 "body() {
     IFS= read -r header
-    printf '%s\n' "$header"
-    "$@"
+    printf '%s\n' '$header'
+    '$@'
 }"
 )
 
@@ -21,6 +21,18 @@ library(stringr, quietly = T)
 library(biomaRt, quietly = T)
 library(dplyr, quietly = T, warn.conflicts = F)
 library(parallel, quietly = T)
+#__________________________________________________________
+# SET GENOMEDARCHIVE and other PATHS
+#__________________________________________________________
+GENOMEDARCHIVE<-"/media/joanatavares/716533eb-f660-4a61-a679-ef610f66feed/"
+if(!dir.exists(GENOMEDARCHIVE)){
+  GENOMEDARCHIVE<-"/genomedarchive/"
+}
+CRICK<-paste(GENOMEDARCHIVE, "Crick_storage/", sep="")
+LOVELACE<-paste(GENOMEDARCHIVE, "Lovelace_decoding/", sep="")
+MENDEL<-paste(GENOMEDARCHIVE, "Mendel_annotating/", sep="")
+
+setwd(MENDEL)
 #______________________________________________
 # HELP function
 #______________________________________________
@@ -127,8 +139,9 @@ UMDpredictor<-function(ENSTranscripts){
 #________________________________________________________
 # start log file
 #________________________________________________________
-sink(file = "log.txt", append = FALSE, type = c("output"),
-     split = FALSE)
+filename<-"grch37.UMDpredictor"
+sink(file = paste("log_", filename,".txt", sep=""), append = FALSE, type = c("output"),
+     split = TRUE)
 #________________________________________________________
 # SETUP
 #________________________________________________________
@@ -147,8 +160,6 @@ if(is.null(args$column)){
     stop(paste("Column number", as.numeric(as.character(args$column)), "is not ENSTranscript column. Please choose another column number.", sep=" "))
   }
 }
-
-filename<-"UMD-predictor_clinical_transcripts"
 
 #########################################################
 # 1) Check for strange Ensembl IDs
@@ -190,9 +201,10 @@ system(paste("cat ./UMD_tmp/header.txt ./UMD_tmp/ENS*.txt > ", filename, ".txt",
 # 4) sort otuput file and indexed it
 #########################################################
 print("Sort and Index file.")
-system(paste("less", paste(filename,".txt",sep="") , "|", "body sort -k1,1 -k2,2n", "-", ">", paste(filename, "_sort_header.txt", sep=""), sep=" "))
+system(paste("less", paste(filename,".txt",sep="") , "|", "body sort -k1,1 -k2,2n", "-", ">", paste(filename, "_sort_header.txt", sep=""), sep=" ")
+system(paste("mv", paste(filename, "_sort_header.txt", sep=""), paste(filename, ".txt", sep=""), sep=" "))
 # index "_sort.txt"
-system(paste("bgzip", paste(filename, "_sort_header.txt", sep=""), sep=" "))
-system(paste("tabix -p vcf", paste(filename, "_sort_header.txt.gz", sep=""), sep=" "))
+system(paste("bgzip", paste(filename, ".txt", sep=""), sep=" "))
+system(paste("tabix -p vcf", paste(filename, ".txt.gz", sep=""), sep=" "))
 
 sink() # close log file
