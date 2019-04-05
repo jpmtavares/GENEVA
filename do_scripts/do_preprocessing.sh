@@ -36,7 +36,7 @@ if [ -d "/media/joanatavares/716533eb-f660-4a61-a679-ef610f66feed/" ]; then
 else
   path="/genomedarchive/"
 fi
-
+#path="/mnt/data/Genomed_server/"
 ## Set number of threads, process
 processes=5
 
@@ -82,8 +82,31 @@ else
   printf -- '\033[31m ERROR: Input file is missing \033[0m\n';
   exit 1
 fi
+cd ${path_love}Raw/
+while read -r diret; do
+  aux=$(dirname $diret)
+  count=$(ls $aux/*gz | wc -l)
+  if [[ ${count} -ge 4 ]]; then
+    printf -- "\033[33m WARNING: More than one pair for the same sample! \033[0m\n"; 
+    cd ${aux}
+    ls *1.fq.gz > tmp.files
+    for file in *1.fq.gz; do zcat $file | echo $((`wc -l`/4)) >> tmp.listReads; done
+    moreReads=$(python ${path_love}bin/getPairsWithMoreReads.py -list tmp.listReads)
+    getPair=$(sed -n "${moreReads}p" tmp.files | sed s'/1.fq.gz//')
+    rmPairs=$(sed -n "${moreReads}p" tmp.files | cut -d "_" -f1,2)
+    grep "${getPair}" ${path_love}Raw/${inputfile} > tmp.files
+    sed -i "/${rmPairs}/d" ${path_love}Raw/${inputfile} 
+    listtmp_batch=$(echo ${inputfile/tmp/list_tmp})
+    sed -i "/${rmPairs}/d" ${path_love}Raw/${listtmp_batch}
+    cat tmp.files >> ${path_love}Raw/${inputfile}
+    cat tmp.files >> ${path_love}Raw/${listtmp_batch}
+    rm tmp*
+  fi
+  cd ${path_love}Raw/
+done < ${inputfile}
 
 ##__________ CHECK AND GET THE SAMPLE NAME __________##
+
 cd ${path_love}Raw/
 
 while read -r first_pair; do
@@ -102,6 +125,12 @@ while read -r first_pair; do
   if [[ $check_sample =~ ^samplexist ]]; then
     printf -- "\033[31m ERROR: ${sample_name} need to be checked! \033[0m\n";
     printf -- "\033[31m STOPPING THE ANALYSIS FOR: ${sample_name} This sample already exists in sample_batch.info. \033[0m\n";
+    rm log_
+    continue
+  fi
+  if [[ $check_sample =~ ^checkbigger ]]; then
+    printf -- "\033[33m WARNING: This ${sample_name} is duplicate, check for the pairs with more coverage. \033[0m\n";
+    printf -- "\033[31m STOPPING THE ANALYSIS FOR: ${sample_name} This sample already exists in sample_batch.info, in the same batch. Please check. \033[0m\n";
     rm log_
     continue
   fi
