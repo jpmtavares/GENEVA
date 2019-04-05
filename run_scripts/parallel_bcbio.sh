@@ -47,7 +47,7 @@ MENDEL=${GENOMEDARCHIVE}Mendel_annotating/
 nsamples=4
 ##___________________________##
 # exit script if there is no arguments
-: ${1?"$usage"}
+#: ${1?"$usage"}
 
 while getopts ':h:n:' option; do
   case "$option" in
@@ -74,19 +74,24 @@ shift $((OPTIND - 1))
 IFS=$' ' read -r -a sampleorder <<< $(find $(ls -dtr ${LOVELACE}Analysis/*) -maxdepth 0 -type d  \! -exec test -d '{}/bcbio' \; -print | grep -v "${LOVELACE}Analysis/$")
 
 # ask user if want to change the order of running
-#echo
-#echo "--------------------------------------------------------"
-#echo "                   RUNNING ORDER                        "
-#echo "--------------------------------------------------------"
+echo
+echo "--------------------------------------------------------"
+echo "                   RUNNING ORDER                        "
+echo "--------------------------------------------------------"
 
-#select sample in ${sampleorder[@]} exit; do
-#    echo $sample
-#    if [ "$sample" = "exit" ]; then
-#      continue
-#    else
-#      touch -t 1003140001.01 "$sample"
-#    fi
-#done
+select sample in ${sampleorder[@]##*/} exit; do
+    echo "Sample ${sample##*/} moved to the beginning of the list"
+
+    # check for older folder, and 
+    touch -t $(echo $(find ${LOVELACE}Analysis/ -maxdepth 1 -type d -printf '%Ty%Tm%Td%TH%TM.01\n' | sort | head -n1)-10000 | bc) ${LOVELACE}Analysis/${sample}
+
+    case $sample in
+      exit) 
+        echo "Proceding to bcbio-nextgen analysis"
+        break
+        ;;		
+    esac
+done
 
 # update sampleorder with user input
 IFS=$' ' read -r -a sampleorder <<< $(find $(ls -dtr ${LOVELACE}Analysis/*) -maxdepth 0 -type d  \! -exec test -d '{}/bcbio' \; -print | grep -v "${LOVELACE}Analysis/$")
