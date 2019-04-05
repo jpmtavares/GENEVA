@@ -130,7 +130,7 @@ ${MENDEL}bin/create_grch37.refseq_ensembl_lrg_hugo.R
 ${MENDEL}bin/control_versions.sh
 
 ############################################################
-#   3) Download BED files from UCSC Table Browser for create_grch37.refseq_ensembl_lrg_hugo.R
+#   3.0) Download BED files from UCSC Table Browser for create_grch37.refseq_ensembl_lrg_hugo.R
 ############################################################
 # get exons.bed from UCSC Table Browser
 wget --progress=dot \
@@ -145,7 +145,7 @@ wget --progress=dot \
 'fbQual=intron&fbIntronBases=0&submit=submit&hgta_doGetBed=1' -O "${MENDEL}GRCh37_NCBIRefSeq_introns.bed"
 
 ############################################################
-#   4) Run create_grch37.exons.refseq_ensembl_lrg_hugo.R
+#   3.1) Run create_grch37.exons.refseq_ensembl_lrg_hugo.R
 ############################################################
 RefSeqtranscripts=$(ls ${LOVELACE}Annotation/Transcripts/grch37.refseq_ensembl_lrg_hugo_v*)
 
@@ -166,4 +166,14 @@ ${MENDEL}/bin/get_genesCoordinates.py --refseq ${RefSeqexons} --out_file ${MENDE
 #______________________________________________
 ${MENDEL}bin/control_versions.sh
 
+############################################################
+#   5) Run get_HGVS4RefSeq.sh for clinical transcripts
+############################################################
+RefSeqtranscripts=$(ls ${LOVELACE}Annotation/Transcripts/grch37.refseq_ensembl_lrg_hugo_v*)
+
+${MENDEL}/bin/get_HGVS4RefSeq.sh -f ${RefSeqtrnascripts} -c ${CRICK}Annotation/Variants/VEP/
+#______________________________________________
+# version control
+#______________________________________________
+${MENDEL}bin/control_versions.sh
 
