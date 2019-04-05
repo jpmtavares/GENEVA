@@ -148,23 +148,23 @@ echo "_______________________________________________________________"
 echo
 # Merge all chromosomes into final file
 echo "                       " "Merge all chromosomes"
-cat ${MENDEL}grch37.clin.hgvs_dbsnp.chr*.warnings.vcf > ${MENDEL}grch37.clin.hgvs_dbsnp.warnings.vcf
+cat ${MENDEL}grch37.clin.hgvs_dbsnp.chr*.warnings.vcf > ${MENDEL}grch37.clin.hgvs_dbsnp.warnings.txt
 rm ${MENDEL}grch37.clin.hgvs_dbsnp.chr*.warnings.vcf
-cat ${MENDEL}grch37.clin.hgvs_dbsnp.chr*.vcf > ${MENDEL}grch37.clin.hgvs_dbsnp.vcf
+cat ${MENDEL}grch37.clin.hgvs_dbsnp.chr*.vcf > ${MENDEL}grch37.clin.hgvs_dbsnp.txt
 rm ${MENDEL}grch37.clin.hgvs_dbsnp.chr*.vcf
 
 # Sort
 echo "                       " "Sort, BGZip and Index final file"
-sort -k1,1 -k2,2n -T ${MENDEL} ${MENDEL}grch37.clin.hgvs_dbsnp.vcf > ${MENDEL}grch37.clin.hgvs_dbsnp.sort.vcf
-mv ${MENDEL}grch37.clin.hgvs_dbsnp.sort.vcf ${MENDEL}grch37.clin.hgvs_dbsnp.vcf
+sort -k1,1 -k2,2n -T ${MENDEL} ${MENDEL}grch37.clin.hgvs_dbsnp.txt > ${MENDEL}grch37.clin.hgvs_dbsnp.sort.txt
+mv ${MENDEL}grch37.clin.hgvs_dbsnp.sort.txt ${MENDEL}grch37.clin.hgvs_dbsnp.txt
 
 # Add header
-sed -i "1i\#Chr\tPos\tRef\tAlt\trefSeq_mRNA\tHGVSc\trefSeq_protein\tHGVSp\trs_id" ${MENDEL}grch37.clin.hgvs_dbsnp.vcf
+sed -i "1i\#Chr\tPos\tRef\tAlt\trefSeq_mRNA\tHGVSc\trefSeq_protein\tHGVSp\trs_id" ${MENDEL}grch37.clin.hgvs_dbsnp.txt
 
 # BGZip and Tabix
-bgzip ${MENDEL}grch37.clin.hgvs_dbsnp.vcf
-bgzip ${MENDEL}grch37.clin.hgvs_dbsnp.warnings.vcf
-tabix -p vcf ${MENDEL}grch37.clin.hgvs_dbsnp.vcf.gz
+bgzip ${MENDEL}grch37.clin.hgvs_dbsnp.txt
+bgzip ${MENDEL}grch37.clin.hgvs_dbsnp.warnings.txt
+tabix -p vcf ${MENDEL}grch37.clin.hgvs_dbsnp.txt.gz
 
 echo "_______________________________________________________________"
 echo "STEP3 Done."
