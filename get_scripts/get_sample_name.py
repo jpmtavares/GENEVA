@@ -103,7 +103,11 @@ def addingsampletobatchinfofile (batchfile, plataform, batch_name, raw_name, sam
     report="okay"
 
     for line in batchfile: 
-        if sample_name in line: report="samplexist"
+        if sample_name in line: 
+            old_batch=line.rstrip().spli("\t")[0]
+            if old_batch == batch_name: report="checkbigger"
+            else: report="samplexist"
+            
     if report == "okay": batchfile.write(data.strftime('%Y%m%d') + "\t"+plataform+"\t"+batch_name+"\t"+raw_name+"\t"+sample_name+"\n")
     return report
     
