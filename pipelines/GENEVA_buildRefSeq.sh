@@ -169,9 +169,9 @@ ${MENDEL}bin/control_versions.sh
 ############################################################
 #   5) Run get_HGVS4RefSeq.sh for clinical transcripts
 ############################################################
-#RefSeqtranscripts=$(ls ${LOVELACE}Annotation/Transcripts/grch37.refseq_ensembl_lrg_hugo_v*)
+RefSeqtranscripts=$(ls ${LOVELACE}Annotation/Transcripts/grch37.clin.exons.refseq_ensembl_lrg_hugo_v1.0*)
 
-#${MENDEL}/bin/get_HGVS4RefSeq.sh -f ${RefSeqtrnascripts} -c ${CRICK}Annotation/Variants/VEP/
+${MENDEL}/bin/get_HGVS4RefSeq.sh -f ${RefSeqtrnascripts} -c ${CRICK}Annotation/Variants/VEP/
 #______________________________________________
 # version control
 #______________________________________________
