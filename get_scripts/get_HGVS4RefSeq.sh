@@ -16,7 +16,7 @@ usage="$(basename "$0") [-h] [-r <RefSeq file.bed.gz>] [-c <path with output chr
 
 where:
     -h    show this help text
-    -f    [default: {LOVELACE}Annotation/Transcripts/grch37.refseq_ensembl_lrg_hugo_v*.txt] RefSeq file
+    -f    [default: {LOVELACE}Annotation/Transcripts/grch37.clin.exons.refseq_ensembl_lrg_hugo_v*.bed.gz] RefSeq file with clinical transcripts
     -c    [default: {CRICK}Annotation/Variants/VEP/] path with output chromosomes from VEP
 "
 ##__________ SETUP __________##
@@ -30,7 +30,7 @@ LOVELACE=${GENOMEDARCHIVE}Lovelace_decoding/
 MENDEL=${GENOMEDARCHIVE}Mendel_annotating/
 ##___________________________##
 # Set RefSeq file
-RefSeq=$(ls ${LOVELACE}Annotation/Transcripts/grch37.refseq_ensembl_lrg_hugo_v*.txt)
+RefSeq=$(ls ${LOVELACE}Annotation/Transcripts/grch37.clin.exons.refseq_ensembl_lrg_hugo_v*.bed.gz)
 
 # Set VEP output chromosomes path
 chromosomes=${CRICK}Annotation/Variants/VEP/
@@ -69,7 +69,7 @@ echo "STEP1: Getting clinical RefSeq mRNA transcripts from $(basename ${RefSeq})
 echo "_______________________________________________________________"
 echo
 #look for column called "refSeq_mRNA_noVersion" and print it to file 
-awk -F'\t' -v c="refSeq_mRNA_noVersion" 'NR==1{for (i=1; i<=NF; i++) if ($i==c){p=i; break}; next} {print $p}' ${RefSeq} | sort | uniq > ${MENDEL}nm_transcripts.txt
+less ${RefSeq} | awk -F'\t' -v c="refSeq_mRNA_noVersion" 'NR==1{for (i=1; i<=NF; i++) if ($i==c){p=i; break}; next} {print $p}' - | sort | uniq > ${MENDEL}nm_transcripts.txt
 
 echo "Reading $(basename ${RefSeq}) and get unique transcripts in 'refSeq_mRNA_noVersion' column"
 
@@ -155,7 +155,7 @@ rm ${MENDEL}grch37.clin.hgvs_dbsnp.chr*.vcf
 
 # Sort
 echo "                       " "Sort, BGZip and Index final file"
-sort -k1,1 -k2,2n -T ${MENDEL} ${MENDEL}grch37.clin.hgvs_dbsnp.txt > ${MENDEL}grch37.clin.hgvs_dbsnp.sort.txt
+sort -k1,1 -k2,2n -T ${MENDEL} ${MENDEL}grch37.clin.hgvs_dbsnp.txt | uniq > ${MENDEL}grch37.clin.hgvs_dbsnp.sort.txt
 mv ${MENDEL}grch37.clin.hgvs_dbsnp.sort.txt ${MENDEL}grch37.clin.hgvs_dbsnp.txt
 
 # Add header
