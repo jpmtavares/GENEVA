@@ -76,7 +76,7 @@ LOVELACE=${GENOMEDARCHIVE}Lovelace_decoding/
 MENDEL=${GENOMEDARCHIVE}Mendel_annotating/
 ##___________________________##
 # Set foward and reverse fastq if it was not defined by user
-if [[ -z "$Ffastq" || -z "$Rfastq" ]]; then
+if ([ -z "$Ffastq" ] || [ -z "$Rfastq" ]) && [ ! -d "${LOVELACE}Analysis/${samplename}/bcbio/${samplename}" ] ; then
   Ffastq=$(ls ${LOVELACE}Analysis/${samplename}/fastp/*_1.fastp.fq.gz)
   Rfastq=$(ls ${LOVELACE}Analysis/${samplename}/fastp/*_2.fastp.fq.gz)
 fi
@@ -90,9 +90,9 @@ logsample="log_${samplename}"
 ##################################################################
 # check if bcbio folder exists
 # if NOT, creates it, configures BCBIO and STARTs LOG file for analysis
-if [ ! -d "${LOVELACE}Analysis/${samplename}/bcbio" ]; then
+if [ ! -d "${LOVELACE}Analysis/${samplename}/bcbio/${samplename}" ]; then
 
-  mkdir ${LOVELACE}Analysis/${samplename}/bcbio
+  mkdir -p ${LOVELACE}Analysis/${samplename}/bcbio
   cd ${LOVELACE}Analysis/${samplename}/bcbio
 
   # Get configuration run for sample
@@ -136,6 +136,7 @@ echo "ERROR!!"
 finished=$(grep "Timing: finished" ./log/bcbio-nextgen.log)
 if [[ ! -z "$finished" ]]; then
   mv ${LOVELACE}Analysis/${samplename} ${LOVELACE}Finished/
+  echo "                       " "bcbio-nextgen finished with SUCCESS for ${samplename}" >> ${LOVELACE}log/${logsample}
 else
   echo "[        ERROR!!      ]" "bcbio-nextgen failed for ${samplename}" >> ${LOVELACE}log/${logsample}
   echo "                       " "This folder will not be moved, and parallel_bcbio.sh will restart the analysis as soon as possible..." >> ${LOVELACE}log/${logsample}
