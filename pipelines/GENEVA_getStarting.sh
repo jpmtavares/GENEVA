@@ -21,13 +21,14 @@ set -o pipefail
 ###################################
 #   HELP function
 ###################################
-usage="$(basename "$0") [-h] [-f <formulation file with information: link, plataform and samples>] [-p <password to run the chown>] [-t <number of process to run>] 
+usage="$(basename "$0") [-h] [-f <formulation file with information: link, plataform and samples>] [-p <password to run the chown>] [-t <number of process to run>] [-g <get gene panel>] 
        -- program that read a formulation file with information regarding a batch and organize the information to start the analysis  --
 where:
     -h    show this help text
     -f    formulation file
     -p    password to run the chown for raw data
-    -t    [default: 5] set number of process to run  - tool: fastp"
+    -t    [default: 5] set number of process to run  - tool: fastp
+    -g    [default: YES] YES to run gene panel script, or NO to not run the gene panel script"
 
 ##__________ SETUP __________##
 if [ -d "/media/joanatavares/716533eb-f660-4a61-a679-ef610f66feed/" ]; then
@@ -38,10 +39,12 @@ fi
 
 ## Set number of threads, process
 processes=5
+## Run gene panel script
+gpanel="YES"
 
 : ${1?"$usage"}
 
-while getopts ':h:f:t:p:' option; do
+while getopts ':h:f:t:p:g:' option; do
     case "$option" in
     h) echo "$usage"
        exit
@@ -51,6 +54,8 @@ while getopts ':h:f:t:p:' option; do
     p) pass=$OPTARG
        ;;
     t) processes=$OPTARG
+       ;;
+    g) gpanel=$OPTARG
        ;;
     :) printf -- "missing argument for -%s\n" "$OPTARG" >&2
        echo "$usage" >&2
@@ -106,37 +111,39 @@ mv ${path_crick}Source_control/${batch_name}.batch_samplesList ${path_crick}Sour
 more  ${path_crick}Source_control/${inputfile}.batch_samplesList
 
 ##__________ GETTING THE GENES OF GENE PANEL ___________##
-echo "[" "$(date '+%Y-%m-%d %H:%M:%S' )" "]" "Getting the genes in gene panel for each sample in the ${inputfile}"
-${path_love}bin/get_genepanel.R --fromana=="${inputfile}"
+if [[ $gpanel =~ ^YES ]]; then
+  echo "[" "$(date '+%Y-%m-%d %H:%M:%S' )" "]" "Getting the genes in gene panel for each sample in the ${inputfile}"
+  ${path_love}bin/get_genepanel.R --fromana=="${inputfile}"
 
-##__________ PROTECTING THE RAW DATA AND CHECK IF AN ERROR OCCURRED __________##
-cd ${path_crick}Source_control/
-tail -n +3 ${path_crick}Source_control/gene_panel/${inputfile} | cut -f1 > ${path_crick}Source_control/${inputfile}.genepanel_samplesList
-while IFS='\n' read -r line || [[ -n "$line" ]]; do
-  if ! grep -q "Starting Gene Panel" ${path_love}log/log_${line}; then 
-    printf -- "\033[33m WARNING: ${line} don't have an gene panel associated! Check. \033[0m\n";
+  ##__________ PROTECTING THE RAW DATA AND CHECK IF AN ERROR OCCURRED __________##
+  cd ${path_crick}Source_control/
+  tail -n +3 ${path_crick}Source_control/gene_panel/${inputfile} | cut -f1 > ${path_crick}Source_control/${inputfile}.genepanel_samplesList
+  while IFS='\n' read -r line || [[ -n "$line" ]]; do
+    if ! grep -q "Starting Gene Panel" ${path_love}log/log_${line}; then 
+      printf -- "\033[33m WARNING: ${line} don't have an gene panel associated! Check. \033[0m\n";
+    else
+      if grep -q "ERROR" ${path_love}log/log_${line}; then 
+        errortype=$(grep -A1 "ERROR" ${path_love}log/log_${line} | tail -n1 | sed -zE 's/[[:space:]]*([[:space:]])/\1/g') 
+        printf -- "\033[31m ERROR: ${line} \033[0m\n"
+        printf -- "\033[31m       ${errortype} \033[0m\n"
+      fi
+    fi  
+  if [ -f ${path_love}to_do/${line}_genepanel.pending ]; then 
+    printf -- "\033[33m WARNING: ${line} have genes pending! Go to to_do and check. \033[0m\n"; 
+  fi
+  done < *${inputfile}*batch_samplesList*
+
+  if grep -q -v -F -x -f ${inputfile}.batch_samplesList ${inputfile}.genepanel_samplesList; then
+    samplesnobatch=$(grep -v -F -x -f ${inputfile}.batch_samplesList ${inputfile}.genepanel_samplesList | sed -zE 's/\n/    /g')
+    printf -- "\033[31m ERROR: Sample(s) in ${inputfile} but not in batch. \033[0m\n"
+    printf -- "\033[31m        ${samplesnobatch} \033[0m\n"
   else
-    if grep -q "ERROR" ${path_love}log/log_${line}; then 
-      errortype=$(grep -A1 "ERROR" ${path_love}log/log_${line} | tail -n1 | sed -zE 's/[[:space:]]*([[:space:]])/\1/g') 
-      printf -- "\033[31m ERROR: ${line} \033[0m\n"
-      printf -- "\033[31m       ${errortype} \033[0m\n"
-    fi
-  fi  
-if [ -f ${path_love}to_do/${line}_genepanel.pending ]; then 
-  printf -- "\033[33m WARNING: ${line} have genes pending! Go to to_do and check. \033[0m\n"; 
+    printf -- "\033[32m SUCCESS: All samples have a gene panel associated \033[0m\n";
+  fi
+  rm ${path_crick}Source_control/gene_panel/${inputfile}
+  rm ${path_crick}Source_control/${inputfile}.genepanel_samplesList
 fi
-done < *${inputfile}*batch_samplesList*
-
-if grep -q -v -F -x -f ${inputfile}.batch_samplesList ${inputfile}.genepanel_samplesList; then
-  samplesnobatch=$(grep -v -F -x -f ${inputfile}.batch_samplesList ${inputfile}.genepanel_samplesList | sed -zE 's/\n/    /g')
-  printf -- "\033[31m ERROR: Sample(s) in ${inputfile} but not in batch. \033[0m\n"
-  printf -- "\033[31m        ${samplesnobatch} \033[0m\n"
-else
-  printf -- "\033[32m SUCCESS: All samples have a gene panel associated \033[0m\n";
-fi
-rm ${path_crick}Source_control/${inputfile}.genepanel_samplesList
 rm ${path_crick}Source_control/${inputfile}.batch_samplesList
-rm ${path_crick}Source_control/gene_panel/${inputfile}
 
 cd ${path_crick}Raw/2019/
 echo "${pass}" | sudo -S chown -R root:root *-*
