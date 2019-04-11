@@ -205,6 +205,6 @@ system(paste("less", paste(filename,".txt",sep="") , "|", "body sort -k1,1 -k2,2
 system(paste("mv", paste(filename, "_sort_header.txt", sep=""), paste(filename, ".txt", sep=""), sep=" "))
 # index "_sort.txt"
 system(paste("bgzip", paste(filename, ".txt", sep=""), sep=" "))
-system(paste("tabix -p vcf", paste(filename, ".txt.gz", sep=""), sep=" "))
+system(paste("tabix -b2 -e2", paste(filename, ".txt.gz", sep=""), sep=" "))
 
 sink() # close log file
