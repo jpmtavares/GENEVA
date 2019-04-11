@@ -115,7 +115,8 @@ if(date_updated > date_last){ #if there is a newer file in NCBI Clinvar
     cat(paste("                       ", "Downloading", filename, "\n"))
     download.file(url, paste(clinvar_d, filename, sep=""), method = "wget")
     # and index file
-    download.file(paste(url, ".tbi", sep=""), paste(clinvar_d, filename, ".tbi", sep=""), method = "wget")
+    #download.file(paste(url, ".tbi", sep=""), paste(clinvar_d, filename, ".tbi", sep=""), method = "wget")
+    system(paste("tabix -b2 -e2", paste(clinvar_d, filename, sep="")))
 
     #remove older versions from LOVELACE
     cat(paste("                       ", "Remove older version from LOVELACE", "\n"))
