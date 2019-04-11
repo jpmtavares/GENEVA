@@ -19,12 +19,9 @@ def getAllInfo(input_vcf, out_file):
         col_num=len(vcf_reader.samples)
         for record in vcf_reader:
                 for sample in record.samples:
-                        if sample['GT']==".":
-                                missing_count=missing_count+1
-                        if sample['GT']=="0/1":
-                                hete_count=hete_count+1
-                        if sample['GT']=="1/1":
-                                homo_count=homo_count+1
+                        if sample['GT']==".": missing_count=missing_count+1
+                        if sample['GT']=="0/1": hete_count=hete_count+1
+                        if sample['GT']=="1/1": homo_count=homo_count+1
                 af=(float(2*homo_count+hete_count))/(col_num*2)
 		freq="{0:.17f}".format(af)
                 n=hete_count+homo_count
@@ -34,7 +31,13 @@ def getAllInfo(input_vcf, out_file):
 		aux=str(record.ALT)
 		alt=aux.replace("[","")
 		alt=alt.replace("]","")
-		out_file.write(str(chrom) + "\t" + str(pos) + "\t" + str(ref) + "\t" + str(alt) + "\t" + str(n) + "\t" +  str(homo_count) + "\t" + str(freq) + "\n")
+		if "," in alt:
+			i=len(alt.split(","))
+			j=0
+			while j<=i-1: 
+				out_file.write(str(chrom) + "\t" + str(pos) + "\t" + str(ref) + "\t" + str(alt.split(",")[j]) + "\t" + str(n) + "\t" +  str(homo_count) + "\t" + str(freq) + "\n")
+				j+=1
+		else: out_file.write(str(chrom) + "\t" + str(pos) + "\t" + str(ref) + "\t" + str(alt) + "\t" + str(n) + "\t" +  str(homo_count) + "\t" + str(freq) + "\n")
                 missing_count=0
                 hete_count=0
                 homo_count=0
