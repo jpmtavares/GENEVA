@@ -11,12 +11,12 @@
 #   HELP function
 ############################################################
 
-usage="$(basename "$0") [-h] [-r <RefSeq file.bed.gz>] [-c <path with output chromosomes from VEP>]
+usage="$(basename "$0") [-h] [-f <RefSeq file.bed.gz>] [-c <path with output chromosomes from VEP>]
        -- script that gets HGVS nomenclature for a list of RefSeq_mRNA transcripts --
 
 where:
     -h    show this help text
-    -f    [default: {LOVELACE}Annotation/Transcripts/grch37.clin.exons.refseq_ensembl_lrg_hugo_v*.bed.gz] RefSeq file with clinical transcripts
+    -f    [default: {LOVELACE}Annotation/Transcripts/grch37.clin.exons.refseq_ensembl_lrg_hugo.bed.gz] RefSeq file with clinical transcripts
     -c    [default: {CRICK}Annotation/Variants/VEP/] path with output chromosomes from VEP
 "
 ##__________ SETUP __________##
@@ -30,7 +30,7 @@ LOVELACE=${GENOMEDARCHIVE}Lovelace_decoding/
 MENDEL=${GENOMEDARCHIVE}Mendel_annotating/
 ##___________________________##
 # Set RefSeq file
-RefSeq=$(ls ${LOVELACE}Annotation/Transcripts/grch37.clin.exons.refseq_ensembl_lrg_hugo_v*.bed.gz)
+RefSeq=$(ls ${LOVELACE}Annotation/Transcripts/grch37.clin.exons.refseq_ensembl_lrg_hugo.bed.gz)
 
 # Set VEP output chromosomes path
 chromosomes=${CRICK}Annotation/Variants/VEP/
@@ -39,7 +39,7 @@ chromosomes=${CRICK}Annotation/Variants/VEP/
 # exit script if there is no arguments
 #: ${1?"$usage"}
 
-while getopts ':h' option; do
+while getopts ':h:f:c:' option; do
   case "$option" in
     h) echo "$usage"
        exit
@@ -164,7 +164,7 @@ sed -i "1i\#Chr\tPos\tRef\tAlt\trefSeq_mRNA\tHGVSc\trefSeq_protein\tHGVSp\trs_id
 # BGZip and Tabix
 bgzip ${MENDEL}grch37.clin.hgvs_dbsnp.txt
 bgzip ${MENDEL}grch37.clin.hgvs_dbsnp.warnings.txt
-tabix -p vcf ${MENDEL}grch37.clin.hgvs_dbsnp.txt.gz
+tabix -b2 -e2 ${MENDEL}grch37.clin.hgvs_dbsnp.txt.gz
 
 echo "_______________________________________________________________"
 echo "STEP3 Done."
