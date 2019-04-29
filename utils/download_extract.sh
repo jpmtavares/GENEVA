@@ -20,11 +20,12 @@ set -o pipefail
 ###################################
 #   HELP function
 ###################################
-usage="$(basename "$0") [-h] [-f <formulation file with information: link, plataform and samples>] [-p <path>]
+usage="$(basename "$0") [-h] [-f <formulation file with information: link, plataform and samples>] [-d <download tar file>] [-p <path>]
        -- program to download and extract  --
 where:
     -h    show this help text
     -f    formulation file
+    -d    [default: YES] YES to download the file from ana, or stats.download file name to star the analyze from extraction step
     -p    [default:/genomedarchive/] path before the Lovelace and Crick folders"
 
 ##__________ SETUP __________##
@@ -36,12 +37,14 @@ fi
 
 : ${1?"$usage"}
 
-while getopts ':h:f:p:' option; do
+while getopts ':h:f:d:p:' option; do
     case "$option" in
     h) echo "$usage"
        exit
        ;;
     f) inputfile=$OPTARG
+       ;;
+    d) downloadfile=$OPTARG
        ;;
     p) path=$OPTARG
        ;;
@@ -75,11 +78,30 @@ batch_download=$(head -n 1 ${path_crick}Source_control/gene_panel/${inputfile})
 plataform=$(cat ${path_crick}Source_control/gene_panel/${inputfile} | head -n2 | tail -n 1)
 file=$(echo ${batch_download##*/}) ##fom var, greedy front trim ##, matches anything *, until the last /
 cd ${path_crick}Raw/Downloads/
-
-printf -- "Starting the download of: ${file}...\n";
-wget -c ${batch_download} -S -r --show-progress -o stats.download
-if grep "FINISHED" stats.download; then 
-  extract_name="$(grep 'Saving to' stats.download | cut -d ':' -f2 | sed -e "s/ ‘//" -e "s/’//" | uniq)"
+if [[ $downloadfile =~ ^YES ]]; then
+  printf -- "Starting the download of: ${file}...\n";
+  wget -c ${batch_download} -S -r --show-progress -o stats.download
+  if grep "FINISHED" stats.download; then 
+    extract_name="$(grep 'Saving to' stats.download | cut -d ':' -f2 | sed -e "s/ ‘//" -e "s/’//" | uniq)"
+    if [[ ${extract_name} == */* ]]; then
+      mv ${extract_name} ${path_crick}Raw/Downloads/.
+      folder_rm=$(echo ${extract_name} | cut -d "/" -f1)
+      rm -r ${folder_rm}
+      batch_name=$(echo ${extract_name##*/} | cut -d "." -f1)
+      extract_name=$(echo ${extract_name##*/})
+    else
+      batch_name="$(grep 'Saving to' stats.download | cut -d ':' -f2 | cut -d "." -f1 | sed  "s/ ‘//g" | uniq)"
+    fi
+    mv stats.download ${batch_name}.stats.download
+    printf -- '\033[32m SUCCESS: Download finished! \033[0m\n';
+  else ##improve this, give the last files created: ls -taF | grep "tar"
+    aux_var="$(head -n1 stats.download | sed "s/.*https//")"
+    aux_download=$(echo ${aux_var##*/})
+    printf -- "\033[33m WARNING: This batch was already download with the name of:${aux_download}  \033[0m\n";
+  fi
+else 
+  printf -- "Passing the dowload step, for: ${downloadfile} \n" 
+  extract_name="$(grep 'Saving to' ${downloadfile}  | cut -d ':' -f2 | sed -e "s/ ‘//" -e "s/’//" | uniq)"
   if [[ ${extract_name} == */* ]]; then
     mv ${extract_name} ${path_crick}Raw/Downloads/.
     folder_rm=$(echo ${extract_name} | cut -d "/" -f1)
@@ -87,14 +109,8 @@ if grep "FINISHED" stats.download; then
     batch_name=$(echo ${extract_name##*/} | cut -d "." -f1)
     extract_name=$(echo ${extract_name##*/})
   else
-    batch_name="$(grep 'Saving to' stats.download | cut -d ':' -f2 | cut -d "." -f1 | sed  "s/ ‘//g" | uniq)"
+    batch_name="$(grep 'Saving to' ${downloadfile}  | cut -d ':' -f2 | cut -d "." -f1 | sed  "s/ ‘//g" | uniq)"
   fi
-  mv stats.download ${batch_name}.stats.download
-  printf -- '\033[32m SUCCESS: Download finished! \033[0m\n';
-else ##improve this, give the last files created: ls -taF | grep "tar"
-  aux_var="$(head -n1 stats.download | sed "s/.*https//")"
-  aux_download=$(echo ${aux_var##*/})
-  printf -- "\033[33m WARNING: This batch was already download with the name of:${aux_download}  \033[0m\n";
 fi
 printf -- "Starting the extraction of: ${extract_name}...\n";
 tar xvf ${extract_name} --skip-old-files -C ${path_love}Raw/. &> ${path_love}Raw/${batch_name}.stats.extract
