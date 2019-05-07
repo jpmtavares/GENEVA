@@ -21,13 +21,14 @@ set -o pipefail
 ###################################
 #   HELP function
 ###################################
-usage="$(basename "$0") [-h] [-f <formulation file with information: link, plataform and samples>] [-p <password to run the chown>] [-t <number of process to run>] [-g <get gene panel>] 
+usage="$(basename "$0") [-h] [-f <formulation file with information: link, plataform and samples>] [-p <password to run the chown>] [-t <number of process to run>] [-d <download tar file>] [-g <get gene panel>] 
        -- program that read a formulation file with information regarding a batch and organize the information to start the analysis  --
 where:
     -h    show this help text
     -f    formulation file
     -p    password to run the chown for raw data
     -t    [default: 5] set number of process to run  - tool: fastp
+    -d    [default: YES] YES to download the file from ana, or stats.download file name to star the analyze from extraction step
     -g    [default: YES] YES to run gene panel script, or NO to not run the gene panel script"
 
 ##__________ SETUP __________##
@@ -41,10 +42,12 @@ fi
 processes=5
 ## Run gene panel script
 gpanel="YES"
+## Start with the download step
+downloadfile="YES"
 
 : ${1?"$usage"}
 
-while getopts ':h:f:t:p:g:' option; do
+while getopts ':h:f:t:p:d:g:' option; do
     case "$option" in
     h) echo "$usage"
        exit
@@ -54,6 +57,8 @@ while getopts ':h:f:t:p:g:' option; do
     p) pass=$OPTARG
        ;;
     t) processes=$OPTARG
+       ;;
+    d) downloadfile=$OPTARG
        ;;
     g) gpanel=$OPTARG
        ;;
@@ -98,7 +103,7 @@ if [ "$?" != "0" ]; then
 fi
 
 ##__________ STARTING THE DOWNLOAD AND EXTRACTION__________##
-${path_love}bin/download_extract.sh -f ${inputfile}
+${path_love}bin/download_extract.sh -f ${inputfile} -d ${downloadfile}
 line=$(head -n 1 ${path_love}Raw/download.tmp)
 IFS=' ' read -ra elements <<< "${line}"
 pairs_file="${elements[0]}"
