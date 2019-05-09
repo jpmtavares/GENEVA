@@ -114,6 +114,8 @@ genesofinterest<-function(sampleID, genesList){
   #________________________________________________________
   # remove white spaces or other characters from genesList and sampleID
   #________________________________________________________
+  # remove non-ASCII characters
+  genesList<-iconv(genesList, "latin1", "ASCII", sub="")
   #processing genes list
   #_______________________
   genes<-genesList %>%
