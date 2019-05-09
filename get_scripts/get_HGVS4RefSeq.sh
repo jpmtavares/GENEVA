@@ -69,7 +69,7 @@ echo "STEP1: Getting clinical RefSeq mRNA transcripts from $(basename ${RefSeq})
 echo "_______________________________________________________________"
 echo
 #look for column called "refSeq_mRNA_noVersion" and print it to file 
-less ${RefSeq} | awk -F'\t' -v c="refSeq_mRNA_noVersion" 'NR==1{for (i=1; i<=NF; i++) if ($i==c){p=i; break}; next} {print $p}' - | sort | uniq > ${MENDEL}nm_transcripts.txt
+less ${RefSeq} | awk -F'\t' -v c="refSeq_mRNA_noVersion" 'NR==1{for (i=1; i<=NF; i++) if ($i==c){p=i; break}; next} {print $p"."}' - | sort | uniq > ${MENDEL}nm_transcripts.txt
 
 echo "Reading $(basename ${RefSeq}) and get unique transcripts in 'refSeq_mRNA_noVersion' column"
 
