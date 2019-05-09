@@ -120,7 +120,8 @@ genesofinterest<-function(sampleID, genesList){
   #_______________________
   genes<-genesList %>%
     gsub("\\(.*\\)","", .) %>% #removes everything between ( )
-    gsub("\\[.*\\]","", .) #removes everything between [ ]
+    gsub("\\[.*\\]","", .) %>% #removes everything between [ ]
+    gsub("\\*", "", .)
   genes<-unlist(strsplit(genes,split="[, \t=\\*]+")) %>% #splits list by ,\s + \t or =
     gsub("[, ()=]+|\n","",.) %>%
     .[.!=""] %>% unique %>% sort %>% data.frame(HGNC_symbol=.)
