@@ -232,8 +232,8 @@ output_version=$(echo "${entry_fields[1]}+0.1" | bc)
         ##########################
         #   2) Copy to CRICK and LOVELACE
         ##########################
-        crick=$(dirname $(find ${CRICK} | grep ${filename_noVersion} | grep -v "log" | head -n1))
-        lovelace=$(dirname $(find ${LOVELACE} | grep ${filename_noVersion} | head -n1))
+        crick=$(dirname $(find ${CRICK} | grep ${filename_noVersion} | grep -v "log" | head -n1))/
+        lovelace=$(dirname $(find ${LOVELACE} | grep ${filename_noVersion} | head -n1))/
         copy_files ${crick} ${lovelace}
       else
         exit 2
@@ -244,8 +244,8 @@ output_version=$(echo "${entry_fields[1]}+0.1" | bc)
       ##########################
       #   2) Copy to CRICK and LOVELACE
       ##########################
-      crick=$(dirname $(find ${CRICK} | grep ${filename_noVersion} | grep -v "log" | head -n1))
-      lovelace=$(dirname $(find ${LOVELACE} | grep ${filename_noVersion} | head -n1))
+      crick=$(dirname $(find ${CRICK} | grep ${filename_noVersion} | grep -v "log" | head -n1))/
+      lovelace=$(dirname $(find ${LOVELACE} | grep ${filename_noVersion} | head -n1))/
       copy_files ${crick} ${lovelace}
     fi
   else
@@ -272,8 +272,8 @@ output_version=$(echo "${entry_fields[1]}+0.1" | bc)
       ##########################
       #   2) Copy to CRICK and LOVELACE
       ##########################
-      crick=$(dirname $(find ${CRICK} | grep ${filename_noVersion} | grep -v "log" | head -n1))
-      lovelace=$(dirname $(find ${LOVELACE} | grep ${filename_noVersion} | head -n1))
+      crick=$(dirname $(find ${CRICK} | grep ${filename_noVersion} | grep -v "log" | head -n1))/
+      lovelace=$(dirname $(find ${LOVELACE} | grep ${filename_noVersion} | head -n1))/
       copy_files ${crick} ${lovelace}
 
     fi
