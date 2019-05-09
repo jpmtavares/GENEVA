@@ -18,7 +18,7 @@
 #                                                                             #
 # 2)                                                                          #
 # If some genes in the list are not found in the REFERENCE ANNOTATION file    #
-# ${LOVELACE}Annotation/Transcripts/grch37.refseq_ensembl_lrg_hugo_v*, it     #
+# ${LOVELACE}Annotation/Transcripts/grch37.refseq_ensembl_lrg_hugo.txt, it    #
 # will output ${samplename}_genepanel.pending in the same directory.          #
 #                                                                             #
 # 3)                                                                          #
@@ -33,7 +33,7 @@
 #                                                                             #
 # REQUIRED:                                                                   #
 #   - fromana_yyyymmdd.tmp [--fromana]                                        #
-#   - ${LOVELACE}Annotation/Transcripts/grch37.refseq_ensembl_lrg_hugo_v*     # 
+#   - ${LOVELACE}Annotation/Transcripts/grch37.refseq_ensembl_lrg_hugo.txt    # 
 #                                                                             #
 ###############################################################################
 
@@ -108,7 +108,7 @@ genesofinterest<-function(sampleID, genesList){
   # read RefSeq transcripts
   #________________________________________________________
   refseq_path<-list.files(path=paste(LOVELACE, "Annotation/Transcripts/", sep=""),
-                          pattern="grch37.refseq_ensembl_lrg_hugo_v*", recursive = F, full.names = T)
+                          pattern="grch37.refseq_ensembl_lrg_hugo.txt", recursive = F, full.names = T)
   refseq<-read.delim(refseq_path, header=T)
   
   #________________________________________________________
