@@ -10,7 +10,7 @@ set -o pipefail
 # This script runs BCBIO-NEXTGEN for a single sample. If fastq files are not defined, #
 # this scripts will attempt to look for both of them (paired-end) in                  #
 # ${LOVELACE}Analysis/${samplename}/fastp/                                            #
-# By default, germline analysis template ${LOVELACE}config/grch37.bcbio_germline_v*   #
+# By default, germline analysis template ${LOVELACE}config/grch37.bcbio_germline.yaml #
 # will be used.                                                                       #
 # Successful samples will be moved to ${LOVELACE}Finished/ and the end of the run.    #
 #                                                                                     #
@@ -81,7 +81,7 @@ if ([ -z "$Ffastq" ] || [ -z "$Rfastq" ]) && [ ! -d "${LOVELACE}Analysis/${sampl
   Rfastq=$(ls ${LOVELACE}Analysis/${samplename}/fastp/*_2.fastp.fq.gz)
 fi
 # Set germline analysis by default
-template=$(ls ${LOVELACE}config/grch37.bcbio_germline_v*)
+template=$(ls ${LOVELACE}config/grch37.bcbio_germline.yaml)
 # Set logsample
 logsample="log_${samplename}"
 
