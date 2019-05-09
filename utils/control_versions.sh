@@ -142,14 +142,17 @@ function copy_files {
     cp $(ls | grep "${filename_noVersion}_v" | grep "log\|warning") ${crick_path}log/
 
     # Copy new version to LOVELACE and remove older one
-    echo
-    echo "Remove older file version from LOVELACE_decoding/"
-    echo
-    rm $(ls -d ${lovelace_path}${filename_noVersion}_v*)
-    echo
-    echo "Copy new file version to LOVELACE_decoding/"
-    echo
-    cp $(ls | grep "^${filename_noVersion}_v" | grep -v "log\|warnings") ${lovelace_path}
+    for link in $(ls | grep "^${filename_noVersion}_v" | grep -v "log\|warnings"); do
+      echo
+      echo "Remove older file version from LOVELACE_decoding/"
+      echo
+      rm ${lovelace_path}${link/_v[0-9]*.[0-9]/}
+      echo
+      echo "Copy new file version to LOVELACE_decoding/"
+      echo
+      ln -s ${crick_path}${link} ${lovelace_path}${link/_v[0-9]*.[0-9]/}
+    done
+    # Remove files in MENDEL
     rm $(ls | grep "${filename_noVersion}_v")
 }
 
