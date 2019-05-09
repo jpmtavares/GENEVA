@@ -127,7 +127,7 @@ ${MENDEL}bin/create_grch37.refseq_ensembl_lrg_hugo.R
 #______________________________________________
 # version control
 #______________________________________________
-${MENDEL}bin/control_versions.sh
+#${MENDEL}bin/control_versions.sh
 
 ############################################################
 #   3.0) Download BED files from UCSC Table Browser for create_grch37.refseq_ensembl_lrg_hugo.R
@@ -147,35 +147,36 @@ wget --progress=dot \
 ############################################################
 #   3.1) Run create_grch37.exons.refseq_ensembl_lrg_hugo.R
 ############################################################
-RefSeqtranscripts=$(ls ${LOVELACE}Annotation/Transcripts/grch37.refseq_ensembl_lrg_hugo_v*)
+RefSeqtranscripts=$(ls ${LOVELACE}Annotation/Transcripts/grch37.refseq_ensembl_lrg_hugo.txt)
 
 ${MENDEL}/bin/create_grch37.exons.refseq_ensembl_lrg_hugo.R --exons=="${MENDEL}GRCh37_NCBIRefSeq_exons.bed" --introns=="${MENDEL}GRCh37_NCBIRefSeq_introns.bed" --RefSeq==${RefSeqtranscripts}
 #______________________________________________
 # version control
 #______________________________________________
-${MENDEL}bin/control_versions.sh
+#${MENDEL}bin/control_versions.sh
 
 ############################################################
 #   4) Run get_genesCoordinates.py for clinical BED files
 ############################################################
-RefSeqexons=$(ls ${LOVELACE}Annotation/Transcripts/grch37.clin.exons.refseq_ensembl_lrg_hugo_v*.bed.gz)
+RefSeqexons=$(ls ${LOVELACE}Annotation/Transcripts/grch37.clin.exons.refseq_ensembl_lrg_hugo.bed.gz)
 
 ${MENDEL}/bin/get_genesCoordinates.py --refseq ${RefSeqexons} --out_file ${MENDEL}grch37.clin.exons.refseq_ensembl_lrg_hugo_coordinates.bed
 #______________________________________________
 # version control
 #______________________________________________
-${MENDEL}bin/control_versions.sh
+#${MENDEL}bin/control_versions.sh
 
 ############################################################
 #   5) Run get_HGVS4RefSeq.sh for clinical transcripts
-############################################################
-RefSeqtranscripts=$(ls ${LOVELACE}Annotation/Transcripts/grch37.clin.exons.refseq_ensembl_lrg_hugo_v1.0*)
+###########################################################
+RefSeqexons=$(ls ${LOVELACE}Annotation/Transcripts/grch37.clin.exons.refseq_ensembl_lrg_hugo.bed.gz)
 
-${MENDEL}/bin/get_HGVS4RefSeq.sh -f ${RefSeqtrnascripts} -c ${CRICK}Annotation/Variants/VEP/
+${MENDEL}/bin/get_HGVS4RefSeq.sh -f ${RefSeqexons} -c ${CRICK}Annotation/Variants/VEP/
 #______________________________________________
 # version control
 #______________________________________________
-${MENDEL}bin/control_versions.sh
+#${MENDEL}bin/control_versions.sh
+
 ############################################################
 #   6) Run get_UMDpredictior.R for clinical transcripts
 ###########################################################
