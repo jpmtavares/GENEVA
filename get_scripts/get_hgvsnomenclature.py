@@ -22,10 +22,6 @@ def getAlleleRef(chromo, posi):
 
 def getOutput(vcfin, vcfout):
 	lvars=[]
-	hgvsp="-"
-	hgvsc="-"
-	np="-"
-	nm="-"
 	warn=False
 	
 	outerro=vcfout+".warnings"
@@ -34,6 +30,10 @@ def getOutput(vcfin, vcfout):
 	output=open(outfile,"w")
 	vcf=open(vcfin, "r")
 	for line in vcf:
+		hgvsp="-"
+		hgvsc="-"
+		np="-"
+		nm="-"
 		if not line.startswith("#") and "HGVS" in line:
 			aux=line.rstrip().split("\t")[13]
 			rs_id=line.rstrip().split("\t")[0]
