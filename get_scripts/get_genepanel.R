@@ -249,7 +249,7 @@ genesofinterest<-function(sampleID, genesList){
   error = function(e2) {
     write.table(genes_output, paste(CRICK, "Source_control/gene_panel/", sample, "_genepanel.txt", sep = ""),
                 col.names = F, row.names = F, quote = F)
-    cat(paste("[        ERROR!!      ]", "Gene Panel failed for", "\n", sample, sep = " "))
+    cat(paste("[        ERROR!!      ]", "Gene Panel failed for", sample, "\n",sep = " "))
     cat(paste("                       ", "This sample wasn't found in CRICK/Raw or LOVELACE/Raw... please check this.", "\n"))
   })
   
@@ -329,7 +329,7 @@ print_HUGO<-function(HGNC_genes, total_genes){
             paste(hugo, collapse=", "),"\n", sep=" "))
 }
 print_badgene<-function(sample, genesList, total_genes, bad_written, refseq_path, CRICK){
-  cat(paste("[        ERROR!!      ]", "Gene Panel failed for", sample, sep = " "))
+  cat(paste("[        ERROR!!      ]", "Gene Panel failed for", sample, "\n", sep = " "))
   cat(paste("                       ", "GENES NOT INCLUDED in", basename(refseq_path),
             paste("[", length(bad_written$HGNC_symbol), "/", total_genes,"]", sep=""),
             paste(bad_written$HGNC_symbol, collapse = ", "), "\n", sep=" "))
