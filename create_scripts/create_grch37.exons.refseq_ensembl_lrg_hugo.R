@@ -159,8 +159,9 @@ system(paste("sort -k1,1 -k2,2n", paste(filename_clinical, ".bed", sep=""), ">",
 system(paste("awk 'NF{NF-=1};1'", paste(filename_clinical, "_sort.bed", sep=""), "| uniq | awk '{ print $1\"\t\"$2\"\t\"$3\"\t\"$6\",\"$7\",\"$4\",\"$5\",\"$8\",\"$9\",\"$10}' | sed -r 's/\\s+/\\t/g' >", paste(filename_clinical, "_coverage.bed", sep=""), sep=" "))
 
 # add header to output files
+write.table("#Chr\tStart\tEnd\tRegion\tStrand\tHGNC_symbol\tHGNC_alternative_symbol\tENSGene\tENSTranscript\trefSeq_mRNA\trefSeq_protein\trefSeq_mRNA_noVersion\trefSeq_protein_noVersion\tLRG_id\tclinical", "header_c.txt", col.names=F, row.names=F, quote=F, sep="\t")
 write.table("#Chr\tStart\tEnd\tRegion\tStrand\tHGNC_symbol\tHGNC_alternative_symbol\tENSGene\tENSTranscript\trefSeq_mRNA\trefSeq_protein\trefSeq_mRNA_noVersion\trefSeq_protein_noVersion\tLRG_id", "header.txt", col.names=F, row.names=F, quote=F, sep="\t")
-system(paste("cat header.txt", paste(filename, "_sort.bed", sep=""), ">",
+system(paste("cat header_c.txt", paste(filename, "_sort.bed", sep=""), ">",
              paste(filename, "_hdr.bed", sep=""), sep=" "))
 system(paste("rm", paste(filename, "_sort.bed", sep="")))
 system(paste("cat header.txt", paste(filename_clinical, "_sort.bed", sep=""), ">",
@@ -177,7 +178,7 @@ system(paste("bgzip", paste(filename_clinical, ".bed", sep=""), sep=" "))
 system(paste("tabix -b 2 -e 3", paste(filename, ".bed.gz", sep=""), sep=" "))
 system(paste("tabix -b 2 -e 3", paste(filename_clinical, ".bed.gz", sep=""), sep=" "))
 
-system(paste("rm header.txt", args[["exons"]], args[["introns"]], sep=" "))
+system(paste("rm header_c.txt header.txt", args[["exons"]], args[["introns"]], sep=" "))
 
 #______________________________________
 # print output files
