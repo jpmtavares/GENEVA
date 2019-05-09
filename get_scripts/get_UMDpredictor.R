@@ -139,7 +139,7 @@ UMDpredictor<-function(ENSTranscripts){
 #________________________________________________________
 # start log file
 #________________________________________________________
-filename<-"grch37.UMDpredictor"
+filename<-"grch37.clin.UMDpredictor"
 sink(file = paste("log_", filename,".txt", sep=""), append = FALSE, type = c("output"),
      split = TRUE)
 #________________________________________________________
@@ -201,7 +201,7 @@ system(paste("cat ./UMD_tmp/header.txt ./UMD_tmp/ENS*.txt > ", filename, ".txt",
 # 4) sort otuput file and indexed it
 #########################################################
 print("Sort and Index file.")
-system(paste("less", paste(filename,".txt",sep="") , "|", "body sort -k1,1 -k2,2n", "-", ">", paste(filename, "_sort_header.txt", sep=""), sep=" ")
+system(paste("less", paste(filename,".txt",sep="") , "|", "body sort -k1,1 -k2,2n", "-", ">", paste(filename, "_sort_header.txt", sep=""), sep=" "))
 system(paste("mv", paste(filename, "_sort_header.txt", sep=""), paste(filename, ".txt", sep=""), sep=" "))
 # index "_sort.txt"
 system(paste("bgzip", paste(filename, ".txt", sep=""), sep=" "))
