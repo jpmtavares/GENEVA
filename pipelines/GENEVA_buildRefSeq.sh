@@ -176,4 +176,13 @@ ${MENDEL}/bin/get_HGVS4RefSeq.sh -f ${RefSeqtrnascripts} -c ${CRICK}Annotation/V
 # version control
 #______________________________________________
 ${MENDEL}bin/control_versions.sh
+############################################################
+#   6) Run get_UMDpredictior.R for clinical transcripts
+###########################################################
+RefSeqexons=$(ls ${LOVELACE}Annotation/Transcripts/grch37.clin.exons.refseq_ensembl_lrg_hugo.bed.gz)
 
+${MENDEL}/bin/get_UMDpredictior.R --RefSeq=="${RefSeqexons}"
+#______________________________________________
+# version control
+#______________________________________________
+#${MENDEL}bin/control_versions.sh
