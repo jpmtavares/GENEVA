@@ -96,7 +96,7 @@ if [ ! -d "${LOVELACE}Analysis/${samplename}/bcbio/${samplename}" ]; then
   cd ${LOVELACE}Analysis/${samplename}/bcbio
 
   # Get configuration run for sample
-  bcbio_nextgen.py -w template ${template} ${samplename} ${Ffastq} ${Rfastq} -n 8
+  bcbio_nextgen.py -w template ${template} ${samplename} ${Ffastq} ${Rfastq} -n 12
   # Enter in working directory
   cd ${LOVELACE}Analysis/${samplename}/bcbio/${samplename}/work
   # Change sample name in configuration file
@@ -128,9 +128,9 @@ fi
 # 2) Run bcbio-nextgen
 ##################################################################
 cd ${LOVELACE}Analysis/${samplename}/bcbio/${samplename}/work
-bcbio_nextgen.py ../config/${samplename}.yaml -n 8
+bcbio_nextgen.py ../config/${samplename}.yaml -n 12
 
-echo "ERROR!!"
+#echo "ERROR!!"
 
 # check if bcbio-nextgen run successfully
 finished=$(grep "Timing: finished" ./log/bcbio-nextgen.log)
