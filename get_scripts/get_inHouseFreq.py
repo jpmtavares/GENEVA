@@ -35,9 +35,9 @@ def getAllInfo(input_vcf, out_file):
 			i=len(alt.split(","))
 			j=0
 			while j<=i-1: 
-				out_file.write(str(chrom) + "\t" + str(pos) + "\t" + str(ref) + "\t" + str(alt.split(",")[j]) + "\t" + str(n) + "\t" +  str(homo_count) + "\t" + str(freq) + "\n")
+				out_file.write(str(chrom.strip()) + "\t" + str(pos.strip()) + "\t" + str(ref.strip()) + "\t" + str(alt.strip().split(",")[j]) + "\t" + str(n) + "\t" +  str(homo_count) + "\t" + str(freq) + "\n")
 				j+=1
-		else: out_file.write(str(chrom) + "\t" + str(pos) + "\t" + str(ref) + "\t" + str(alt) + "\t" + str(n) + "\t" +  str(homo_count) + "\t" + str(freq) + "\n")
+		else: out_file.write(str(chrom.strip()) + "\t" + str(pos.strip()) + "\t" + str(ref.strip()) + "\t" + str(alt.strip()) + "\t" + str(n) + "\t" +  str(homo_count) + "\t" + str(freq) + "\n")
                 missing_count=0
                 hete_count=0
                 homo_count=0
