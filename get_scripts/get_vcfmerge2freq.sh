@@ -21,7 +21,19 @@ where:
     -o    [default: inHouse_freq_] set output name for allele frequency file
     -p    [default: 24] set number of process to run at the same time"
 
-##__________ SETUP __________##
+############################################################
+#   SETUP
+############################################################
+if [ -d "/media/joanatavares/716533eb-f660-4a61-a679-ef610f66feed/" ]; then
+  path="/media/joanatavares/716533eb-f660-4a61-a679-ef610f66feed/"
+else
+  if [ -d "/genomedarchive/" ]; then
+    path="/genomedarchive/"
+  else
+    path="/mnt/data/Genomed_server/"
+  fi
+fi
+
 # Get the running date of script
 todaydate="$(date +%Y%m%d)"
 # Set current directory as default
@@ -59,24 +71,31 @@ done
 shift $((OPTIND - 1))
 
 ############################################################
-#   1) merge vcf files with vcf-merge tool
+#   SET PRIMARY DIRECTORIES
+############################################################
+path_crick=${path}Crick_storage/
+path_love=${path}Lovelace_decoding/
+path_rosa=${path}Rosalind_resolution/
+
+############################################################
+#   Merge vcf files with vcf-merge tool
 ############################################################
 echo "STEP 1:"
 echo "Merging the vcf files ..."
 
-echo "number of samples: "
+echo "number of samples: " 
 #Count number of sample
-ls ${vcfPath}/[0-9]*.vcf.gz | wc -l
+more info_samples.txt | wc -l
 
-# Run vcf-merge and compress file with bgzip
-vcf-merge $(readlink -f ${vcfPath}/[0-9]*.vcf.gz) | bgzip -c > ${vcfPath}/todas_${todaydate}.vcf.gz
+# Run vcf-merge and compress file with bgzip, not treat as identical sites with diff alleles: option -c [none, default: any]
+vcf-merge -c none $(readlink -f ${vcfPath}/[0-9]*.vcf.gz) | bgzip -c > ${vcfPath}/todas_${todaydate}.vcf.gz
 # Create tabix index file
 tabix -p vcf ${vcfPath}/todas_${todaydate}.vcf.gz
 
 echo "All the vcf files were merged"
 
 ############################################################
-#   2) split merged vcf file by chromosome
+#   Split merged vcf file by chromosome
 ############################################################
 echo "STEP 2:"
 echo "Split the files by chromossomes ..."
@@ -92,7 +111,7 @@ done
 echo "Done this step"
 
 ############################################################
-#   3) get the frequences (in house info)
+#   Get the frequences (in house info)
 ############################################################
 echo "STEP 3:"
 echo "Construct the table with the number of samples, number of homozigotics and the allelic frequences ..."
@@ -110,7 +129,7 @@ tabix -b 2 -e 2 ${freqPath}/${outputname}${todaydate}.txt
 
 #Remove all temporary files
 rm ${vcfPath}/chr*_*vcf.gz*
-rm ${vcfPath}/*tmp.freq
+#rm ${vcfPath}/*tmp.freq
 rm ${vcfPath}/in_HouseInput_${todaydate}.txt
 
 echo "Finish!" 
